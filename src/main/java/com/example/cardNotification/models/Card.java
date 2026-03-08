@@ -26,6 +26,6 @@ public class Card {
 
     @ManyToOne
     @JoinColumn(name = "client_id")
-    private Client clientId;
+    private Client client;
 
 }
