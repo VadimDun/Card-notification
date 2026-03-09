@@ -29,7 +29,7 @@ public class SqlClientRepository implements ClientRepository {
 
     @Override
     public Optional<Client> findByNameAndBirthDate(String fullName, LocalDate birthDate) {
-        return jpaClientRepository.findByNameAndBirthDate(fullName, birthDate);
+        return jpaClientRepository.findByFullNameAndBirthDate(fullName, birthDate);
     }
 
     @Override
