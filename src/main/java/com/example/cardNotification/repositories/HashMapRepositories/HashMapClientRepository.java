@@ -1,0 +1,45 @@
+package com.example.cardNotification.repositories.HashMapRepositories;
+
+import com.example.cardNotification.models.Client;
+import com.example.cardNotification.repositories.ClientRepository;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
+
+import java.time.LocalDate;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
+
+@Repository
+@Primary
+public class HashMapClientRepository implements ClientRepository {
+    private final Map<Long, Client> clients = new HashMap<>();
+    private final AtomicLong idGen = new AtomicLong();
+
+    @Override
+    public Client save(Client client) {
+        if (client.getId() == null) {
+            client.setId(idGen.incrementAndGet());
+        }
+        clients.put(client.getId(), client);
+        return client;
+    }
+
+    @Override
+    public Optional<Client> findById(Long id) {
+        return Optional.ofNullable(clients.get(id));
+    }
+
+    @Override
+    public Optional<Client> findByNameAndBirthDate(String fullName, LocalDate birthDate) {
+        return clients.values()
+                .stream()
+                .filter(c -> c.getFullName().equals(fullName)
+                        && c.getBirthDate().equals(birthDate))
+                .findFirst();
+    }
+
+    @Override
+    public List<Client> findAll() {
+        return new ArrayList<>(clients.values());
+    }
+}
