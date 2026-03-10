@@ -45,4 +45,9 @@ public class SqlCardRepository implements CardRepository {
     public List<Card> findAll() {
         return jpacardRepository.findAll();
     }
+
+    @Override
+    public void delete(long id){
+        jpacardRepository.deleteById(id);
+    }
 }

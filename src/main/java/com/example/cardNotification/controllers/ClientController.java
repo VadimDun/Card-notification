@@ -5,8 +5,10 @@
     import org.springframework.stereotype.Controller;
     import org.springframework.ui.Model;
     import org.springframework.web.bind.annotation.*;
+    import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
     import java.util.List;
+    import java.util.Optional;
 
     @Controller
     @RequestMapping("clients")
@@ -30,8 +32,19 @@
         }
 
         @PostMapping
-        public String addClient(@ModelAttribute("client") final Client client) {
-            clientService.createClient(client);
+        public String addClient(@ModelAttribute("client") final Client client, RedirectAttributes redirectAttributes) {
+//            boolean isDuplicate = clientService.getAllClients().stream().anyMatch(c -> c.equals(client));
+            Optional<Client> isDuplicate = clientService.getAllClients().stream()
+                    .filter(c -> c.equals(client)).findFirst();
+            if (isDuplicate.isPresent()) {
+                redirectAttributes.addFlashAttribute("duplicateMessage",
+                        "Такой клиент уже существует с id: "
+                                + isDuplicate.get().getId());
+            } else {
+                Client savedClient = clientService.createClient(client);
+                redirectAttributes.addFlashAttribute("successMessage",
+                        "Добавлен новый клиент с id: " + savedClient.getId());
+            }
             return "redirect:/clients";
         }
 

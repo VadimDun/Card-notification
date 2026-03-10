@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -21,8 +22,13 @@ public class CardService {
         this.clientRepository = clientRepository;
     }
 
-    public Long createCard(Card card) {
-        return cardRepository.save(card).getId();
+    public Card createCard(Card card) {
+        while (cardRepository.findByCardNumber(card.getCardNumber()).isPresent()) {
+            String newCardNumber = generateCardNumber();
+            card.setCardNumber(newCardNumber);
+        }
+
+        return cardRepository.save(card);
     }
 
     public Card createCard(Long clientId, LocalDate issueDate, LocalDate expDate) {
@@ -71,6 +77,17 @@ public class CardService {
     }
 
     private String generateCardNumber() {
-        return UUID.randomUUID().toString();
+        Random random = new Random();
+        StringBuilder cardNumber = new StringBuilder(16);
+
+        for (int i = 0; i < 16; i++) {
+            cardNumber.append(random.nextInt(10)); // цифры от 0 до 9
+        }
+
+        return cardNumber.toString();
+    }
+
+    public void deleteById(long id) {
+        cardRepository.delete(id);
     }
 }

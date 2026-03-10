@@ -57,4 +57,9 @@ public class HashMapCardRepository implements CardRepository {
     public List<Card> findAll() {
         return new ArrayList<>(cards.values());
     }
+
+    @Override
+    public void delete(long id){
+        cards.remove(id);
+    }
 }

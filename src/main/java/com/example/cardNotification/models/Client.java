@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "clients")
@@ -21,4 +22,20 @@ public class Client {
     private String fullName;
     private LocalDate birthDate;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Client client = (Client) o;
+
+        return fullName.equals(client.fullName) && birthDate.equals(client.birthDate);
+    }
+
+    @Override
+    public int hashCode() {
+        if (id != null) {
+            return id.hashCode();
+        }
+        return fullName.hashCode() & birthDate.hashCode();
+    }
 }

@@ -6,6 +6,9 @@
 </head>
 <body>
     <h1>Карты</h1>
+
+    <div th:if="${message}" style="color: green; font-weight: bold;" th:text="${message}"></div>
+
     <div>
         <a href="/clients">Перейти к клиентам</a>
         |
@@ -41,6 +44,11 @@
             <td th:text="${item.expDate}">2026-01-01</td>
             <td th:text="${item.client != null ? item.client.fullName : 'No client'}">No Client</td>
             <td th:text="${item.active}">false</td>
+            <td>
+                <form th:action="@{/cards/delete/{id}(id=${item.id})}" method="post">
+                    <button type="submit">Закрыть карту</button>
+                </form>
+            </td>
         </tr>
     </table>
 

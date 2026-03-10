@@ -6,6 +6,10 @@
 </head>
 <body>
     <h1>Клиенты</h1>
+
+    <div th:if="${successMessage}" style="color: green; font-weight: bold;" th:text="${successMessage}"></div>
+    <div th:if="${duplicateMessage}" style="color: red; font-weight: bold;" th:text="${duplicateMessage}"></div>
+
     <div>
         <a href="/cards">Перейти к картам</a>
         |
