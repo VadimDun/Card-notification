@@ -25,7 +25,7 @@ public class CardScheduler {
         List<Card> expiringCards = cardService.getCardsExpiringOn(LocalDate.now());
 
         cardNotifier.notifyClient(LocalDate.now().toString() + "\n");
-        
+
         for (Card card : expiringCards) {
             String message = String.format(
                     "Your card %s (%s) expires today (%s)",

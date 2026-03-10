@@ -2,6 +2,7 @@ package com.example.cardNotification.repositories.HashMapRepositories;
 
 import com.example.cardNotification.models.Client;
 import com.example.cardNotification.repositories.ClientRepository;
+import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +15,14 @@ import java.util.concurrent.atomic.AtomicLong;
 public class HashMapClientRepository implements ClientRepository {
     private final Map<Long, Client> clients = new HashMap<>();
     private final AtomicLong idGen = new AtomicLong();
+
+    // testing
+    @PostConstruct
+    private void init() {
+        Client client = new Client( 1L, "Вадим", LocalDate.of(2004, 7, 3));
+        client.setId(idGen.incrementAndGet());
+        clients.put(client.getId(), client);
+    }
 
     @Override
     public Client save(Client client) {

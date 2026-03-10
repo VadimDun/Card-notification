@@ -5,6 +5,7 @@ import com.example.cardNotification.repositories.ClientRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,5 +37,9 @@ public class ClientService {
 
     public Optional<Client> getClientById(Long id) {
         return clientRepository.findById(id);
+    }
+
+    public List<Client> getAllClients() {
+        return clientRepository.findAll();
     }
 }

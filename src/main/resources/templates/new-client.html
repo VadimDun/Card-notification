@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавление клиента</title>
+</head>
+<body>
+    <h1>Добавление клиента</h1>
+
+    <form th:action="@{/clients}" th:object="${client}" method="post">
+        <label>Полное имя:</label>
+        <label>
+            <input type="text" th:field="*{fullName}" placeholder="Введите имя"/>
+        </label>
+
+        <br><br>
+
+        <label>Дата рождения:</label>
+        <label>
+            <input type="date" th:field="*{birthDate}" placeholder="Введите дату рождения"/>
+        </label>
+
+        <br><br>
+
+        <button type="submit">Добавить</button>
+    </form>
+
+    <hr>
+
+    <a href="/clients">Вернуться</a>
+
+</body>
+</html>
