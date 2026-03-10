@@ -62,6 +62,10 @@ public class CardService {
         return cardRepository.findByExpDate(date);
     }
 
+    public List<Card> getExpiredCardsAndNotNotified(){
+        return cardRepository.findExpiredCards().stream().filter(c -> !c.isNotified()).toList();
+    }
+
     public List<Card> getAllCards() {
         return cardRepository.findAll();
     }

@@ -46,6 +46,14 @@ public class HashMapCardRepository implements CardRepository {
     }
 
     @Override
+    public List<Card> findExpiredCards(){
+        return cards.values()
+                .stream()
+                .filter(c -> !c.isActive())
+                .toList();
+    }
+
+    @Override
     public List<Card> findAll() {
         return new ArrayList<>(cards.values());
     }

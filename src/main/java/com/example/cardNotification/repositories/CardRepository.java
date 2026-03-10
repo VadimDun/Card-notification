@@ -13,5 +13,6 @@ public interface CardRepository {
     Optional<Card> findById(Long id);
     Optional<Card> findByCardNumber(String cardNumber);
     List<Card> findByExpDate(LocalDate date);
+    List<Card> findExpiredCards();
     List<Card> findAll();
 }

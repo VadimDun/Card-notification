@@ -22,18 +22,19 @@ public class CardScheduler {
     @Scheduled(fixedRate = 10000) // for testing
 //    @Scheduled(cron = "0 0 0 * * *")
     public void checkExpiringCardsForNotification() {
-        List<Card> expiringCards = cardService.getCardsExpiringOn(LocalDate.now());
+        List<Card> expiringCards = cardService.getExpiredCardsAndNotNotified();
 
-        cardNotifier.notifyClient(LocalDate.now().toString() + "\n");
+//        cardNotifier.notifyClient(LocalDate.now().toString() + "\n");
 
         for (Card card : expiringCards) {
             String message = String.format(
-                    "Your card %s (%s) expires today (%s)",
-                    card.getCardNumber(),
+                    "%s, срок действия вашей карты номер %s истек %s\n",
                     card.getClient().getFullName(),
+                    card.getCardNumber(),
                     card.getExpDate()
             );
             cardNotifier.notifyClient(message);
+            card.setNotified(true);
         }
     }
 }

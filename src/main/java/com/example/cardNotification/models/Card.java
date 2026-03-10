@@ -23,6 +23,7 @@ public class Card {
     private LocalDate issueDate;
     private LocalDate expDate;
     private boolean isActive;
+    private boolean isNotified;
 
     @ManyToOne
     @JoinColumn(name = "client_id")

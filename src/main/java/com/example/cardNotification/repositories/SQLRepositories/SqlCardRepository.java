@@ -37,6 +37,11 @@ public class SqlCardRepository implements CardRepository {
     }
 
     @Override
+    public List<Card> findExpiredCards(){
+        return jpacardRepository.findByActive(false);
+    }
+
+    @Override
     public List<Card> findAll() {
         return jpacardRepository.findAll();
     }
