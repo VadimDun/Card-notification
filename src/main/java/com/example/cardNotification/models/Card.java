@@ -22,7 +22,7 @@ public class Card {
     private String cardNumber;
     private LocalDate issueDate;
     private LocalDate expDate;
-    private boolean isActive;
+    private boolean active;
     private boolean isNotified;
 
     @ManyToOne
