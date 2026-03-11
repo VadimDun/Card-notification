@@ -19,19 +19,43 @@ public class CardScheduler {
         this.cardNotifier = cardNotifier;
     }
 
-    @Scheduled(fixedRate = 10000) // for testing
+    @Scheduled(fixedRate = 30000) // for testing
 //    @Scheduled(cron = "0 0 0 * * *")
+    // todo проверка на отправку через 1/2 недели(?)
     public void checkExpiringCardsForNotification() {
         List<Card> expiringCards = cardService.getExpiredCardsAndNotNotified();
-
-//        cardNotifier.notifyClient(LocalDate.now().toString() + "\n");
-
         for (Card card : expiringCards) {
             String message = String.format(
                     "%s, срок действия вашей карты номер %s истек %s\n",
                     card.getClient().getFullName(),
                     card.getCardNumber(),
                     card.getExpDate()
+            );
+            cardNotifier.notifyClient(message);
+            card.setNotified(true);
+        }
+
+        LocalDate week = LocalDate.now().plusWeeks(1);
+        List<Card> weekCards = cardService.getCardsExpiringOn(week);
+        for (Card card : weekCards) {
+            String message = String.format(
+                    "%s, срок действия вашей карты номер %s истекает через неделю %s\n",
+                    card.getClient().getFullName(),
+                    card.getCardNumber(),
+                    week
+            );
+            cardNotifier.notifyClient(message);
+            card.setNotified(true);
+        }
+
+        LocalDate week2 = LocalDate.now().plusWeeks(2);
+        List<Card> week2Cards = cardService.getCardsExpiringOn(week2);
+        for (Card card : week2Cards) {
+            String message = String.format(
+                    "%s, срок действия вашей карты номер %s истекает через 2 недели %s\n",
+                    card.getClient().getFullName(),
+                    card.getCardNumber(),
+                    week2
             );
             cardNotifier.notifyClient(message);
             card.setNotified(true);
