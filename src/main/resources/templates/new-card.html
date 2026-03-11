@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавление карты</title>
+</head>
+<body>
+    <h1>Добавление карты</h1>
+
+    <form th:action="@{/cards}" th:object="${card}" method="post">
+        <label>Номер карты:</label>
+        <label>
+            <input type="text" th:field="*{cardNumber}" placeholder="Введите номер карты"/>
+        </label>
+
+        <br><br>
+
+        <label>Срок действия:</label>
+        <label>
+            <input type="date" th:field="*{expDate}" placeholder="Введите дату истечения срока"/>
+        </label>
+
+        <br><br>
+
+        <label>Клиент:</label>
+        <label>
+            <select name="clientId">
+                <option th:each="item : ${clients}"
+                        th:value="${item.id}"
+                        th:text="${item.fullName}">
+                </option>
+            </select>
+        </label>
+
+        <br><br>
+
+        <button type="submit">Добавить</button>
+    </form>
+
+    <hr>
+
+    <a href="/cards">Вернуться</a>
+
+</body>
+</html>

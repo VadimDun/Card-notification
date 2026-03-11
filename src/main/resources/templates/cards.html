@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Карты</title>
+</head>
+<body>
+    <h1>Карты</h1>
+
+    <div th:if="${message}" style="color: green; font-weight: bold;" th:text="${message}"></div>
+
+    <div>
+        <a href="/clients">Перейти к клиентам</a>
+        |
+        <a href="/cards/new">Добавить карту</a>
+    </div>
+
+    <hr>
+
+    <h2>Поиск карт</h2>
+    <form th:action="@{/cards/search}" method="post">
+        <label>
+            Поиск по номеру карты
+            <input type="text" name="searchTerm" placeholder="Найти" th:value="${searchNumber}">
+        </label>
+        <button type="submit">Найти</button>
+    </form>
+
+    <hr>
+
+    <h2>Список карт</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Номер карты</th>
+            <th>Срок действия</th>
+            <th>Клиент</th>
+            <th>Активна?</th>
+        </tr>
+
+        <tr th:each="item : ${cards}" th:unless="${#lists.isEmpty(cards)}">
+            <td th:text="${item.id}">1</td>
+            <td th:text="${item.cardNumber}">1234567890123456</td>
+            <td th:text="${item.expDate}">2026-01-01</td>
+            <td th:text="${item.client != null ? item.client.fullName : 'No client'}">No Client</td>
+            <td th:text="${item.active}">false</td>
+            <td>
+                <form th:action="@{/cards/delete/{id}(id=${item.id})}" method="post">
+                    <button type="submit">Закрыть карту</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

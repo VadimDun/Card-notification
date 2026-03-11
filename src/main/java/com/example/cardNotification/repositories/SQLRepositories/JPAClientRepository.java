@@ -7,5 +7,5 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 public interface JPAClientRepository extends JpaRepository<Client, Long> {
-    Optional<Client> findByNameAndBirthDate(String fullName, LocalDate birthDate);
+    Optional<Client> findByFullNameAndBirthDate(String fullName, LocalDate birthDate);
 }

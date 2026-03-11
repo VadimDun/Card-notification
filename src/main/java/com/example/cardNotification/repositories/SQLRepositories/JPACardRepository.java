@@ -11,5 +11,6 @@ public interface JPACardRepository extends JpaRepository<Card, Long> {
 
     Optional<Card> findByCardNumber(String cardNumber);
     List<Card> findByExpDate(LocalDate expDate);
+    List<Card> findByActive(boolean active);
 }
 
