@@ -25,13 +25,23 @@ public class CardScheduler {
     public void checkExpiringCardsForNotification() {
         List<Card> expiringCards = cardService.getExpiredCardsAndNotNotified();
         for (Card card : expiringCards) {
+            Card newCard = cardService.reissueCard(card);
             String message = String.format(
-                    "%s, срок действия вашей карты номер %s истек %s\n",
+                    "%s, срок действия вашей карты номер %s истек %s." +
+                            "\nОткрыта новая карта. Подробности:" +
+                            "\nНомер карты: %s \nСрок действия: %s\n",
                     card.getClient().getFullName(),
                     card.getCardNumber(),
-                    card.getExpDate()
+                    card.getExpDate(),
+                    newCard.getCardNumber(),
+                    newCard.getExpDate()
             );
             cardNotifier.notifyClient(message);
+            cardNotifier.notifyByEmail(
+                    card.getClient().getEmail(),
+                    "Срок действия вашей карты истек. Мы открыли новую карту",
+                    message
+            );
             card.setNotified(true);
         }
 
@@ -45,6 +55,11 @@ public class CardScheduler {
                     week
             );
             cardNotifier.notifyClient(message);
+            cardNotifier.notifyByEmail(
+                    card.getClient().getEmail(),
+                    "Срок действия вашей карты истекает через неделю",
+                    message
+            );
             card.setNotified(true);
         }
 
@@ -58,6 +73,11 @@ public class CardScheduler {
                     week2
             );
             cardNotifier.notifyClient(message);
+            cardNotifier.notifyByEmail(
+                    card.getClient().getEmail(),
+                    "Срок действия вашей карты истекает через 2 недели",
+                    message
+            );
             card.setNotified(true);
         }
     }

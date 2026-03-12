@@ -22,7 +22,8 @@ public class HashMapClientRepository implements ClientRepository {
     // testing
     @PostConstruct
     private void init() {
-        Client client = new Client( 1L, "Вадим", LocalDate.of(2004, 7, 3));
+        Client client = new Client( 1L, "Вадим",
+                LocalDate.of(2004, 7, 3), "example@gmail.com");
         client.setId(idGen.incrementAndGet());
         clients.put(client.getId(), client);
     }

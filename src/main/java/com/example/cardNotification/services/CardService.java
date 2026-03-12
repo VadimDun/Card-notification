@@ -64,6 +64,20 @@ public class CardService {
         return true;
     }
 
+    public Card reissueCard(Card oldCard) {
+        oldCard.setActive(false);
+        cardRepository.save(oldCard);
+
+        Card newCard = new Card();
+        newCard.setCardNumber(generateCardNumber());
+        newCard.setIssueDate(LocalDate.now());
+        newCard.setExpDate(LocalDate.now().plusYears(4));
+        newCard.setActive(true);
+        newCard.setClient(oldCard.getClient());
+
+        return cardRepository.save(newCard);
+    }
+
     public List<Card> getCardsExpiringOn(LocalDate date) {
         return cardRepository.findByExpDate(date);
     }
