@@ -3,7 +3,6 @@ package com.example.cardNotification.repositories.SQLRepositories;
 import com.example.cardNotification.models.Card;
 import com.example.cardNotification.repositories.CardRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -42,7 +41,12 @@ public class SqlCardRepository implements CardRepository {
 
     @Override
     public List<Card> findExpiredCards(){
-        return jpacardRepository.findByActive(false);
+        return jpacardRepository.findByExpDateLessThanEqual(LocalDate.now());
+    }
+
+    @Override
+    public List<Card> findExpiredAndNotNotifiedCards(){
+        return jpacardRepository.findByExpDateLessThanEqualAndNotifiedFalse(LocalDate.now());
     }
 
     @Override

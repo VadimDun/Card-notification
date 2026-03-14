@@ -25,6 +25,12 @@ public class CardScheduler {
 //    @Scheduled(cron = "0 0 0 * * *")
     // todo проверка на отправку через 1/2 недели(?)
     public void checkExpiringCardsForNotification() {
+        checkExpired();
+        checkWeekBeforeExpired();
+        check2WeekBeforeExpired();
+    }
+
+    private void checkExpired(){
         List<Card> expiringCards = cardService.getExpiredCardsAndNotNotified();
         for (Card card : expiringCards) {
             Card newCard = cardService.reissueCard(card);
@@ -47,8 +53,11 @@ public class CardScheduler {
                 );
             }
             card.setNotified(true);
+            cardService.saveCard(card);
         }
+    }
 
+    private void checkWeekBeforeExpired(){
         LocalDate week = LocalDate.now().plusWeeks(1);
         List<Card> weekCards = cardService.getCardsExpiringOn(week);
         for (Card card : weekCards) {
@@ -66,9 +75,10 @@ public class CardScheduler {
                         message
                 );
             }
-            card.setNotified(true);
         }
+    }
 
+    private void check2WeekBeforeExpired(){
         LocalDate week2 = LocalDate.now().plusWeeks(2);
         List<Card> week2Cards = cardService.getCardsExpiringOn(week2);
         for (Card card : week2Cards) {
@@ -86,7 +96,6 @@ public class CardScheduler {
                         message
                 );
             }
-            card.setNotified(true);
         }
     }
 }
