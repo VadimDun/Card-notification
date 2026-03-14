@@ -21,6 +21,7 @@ public class Client {
     private Long id;
     private String fullName;
     private LocalDate birthDate;
+    private String email;
 
     @Override
     public boolean equals(Object o) {

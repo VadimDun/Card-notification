@@ -35,12 +35,14 @@
             <th>ID</th>
             <th>Имя</th>
             <th>Дата рождения</th>
+            <th>Почта</th>
         </tr>
 
         <tr th:each="client : ${clients}" th:unless="${#lists.isEmpty(clients)}">
             <td th:text="${client.id}">1</td>
             <td th:text="${client.fullName}">No client</td>
             <td th:text="${client.birthDate}">2000-01-01</td>
+            <td th:text="${client.email}">login@mail.com</td>>
         </tr>
     </table>
 

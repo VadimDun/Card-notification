@@ -50,6 +50,11 @@ public class CardService {
         return cardRepository.save(card);
     }
 
+    public void saveCard(Card card) {
+        System.out.println(card.isNotified());
+        cardRepository.save(card);
+    }
+
     public boolean cancelCard(Long cardId) {
         Optional<Card> cardOptional = cardRepository.findById(cardId);
 
@@ -64,16 +69,38 @@ public class CardService {
         return true;
     }
 
+    public Card reissueCard(Card oldCard) {
+        oldCard.setActive(false);
+        cardRepository.save(oldCard);
+
+        Card newCard = new Card();
+        newCard.setCardNumber(generateCardNumber());
+        newCard.setIssueDate(LocalDate.now());
+        newCard.setExpDate(LocalDate.now().plusYears(4));
+        newCard.setActive(true);
+        newCard.setClient(oldCard.getClient());
+
+        return cardRepository.save(newCard);
+    }
+
     public List<Card> getCardsExpiringOn(LocalDate date) {
         return cardRepository.findByExpDate(date);
     }
 
     public List<Card> getExpiredCardsAndNotNotified(){
-        return cardRepository.findExpiredCards().stream().filter(c -> !c.isNotified()).toList();
+        return cardRepository.findExpiredAndNotNotifiedCards();
     }
 
     public List<Card> getAllCards() {
         return cardRepository.findAll();
+    }
+
+    public Optional<Card> findByCardNumber(String number) {
+        return cardRepository.findByCardNumber(number);
+    }
+
+    public List<Card> searchCards(String number) {
+        return cardRepository.findByCardNumberContaining(number);
     }
 
     private String generateCardNumber() {

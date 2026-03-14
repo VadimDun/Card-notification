@@ -52,13 +52,27 @@ public class HashMapCardRepository implements CardRepository {
     public List<Card> findExpiredCards(){
         return cards.values()
                 .stream()
-                .filter(c -> !c.isActive())
+                .filter(c -> c.getExpDate().isBefore(LocalDate.now().plusDays(1)))
                 .toList();
     }
 
     @Override
+    public List<Card> findExpiredAndNotNotifiedCards(){
+        return new ArrayList<>(cards.values()
+                .stream()
+                .filter(c -> c.getExpDate().isBefore(LocalDate.now().plusDays(1)) && !c.isNotified())
+                .toList());
+    }
+
+
+    @Override
     public List<Card> findAll() {
         return new ArrayList<>(cards.values());
+    }
+
+    @Override
+    public List<Card> findByCardNumberContaining(String numberPart){
+        return new ArrayList<>(cards.values().stream().filter(c -> c.getCardNumber().contains(numberPart)).toList());
     }
 
     @Override

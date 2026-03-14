@@ -12,4 +12,5 @@ public interface ClientRepository {
     Optional<Client> findById(Long id);
     Optional<Client> findByNameAndBirthDate(String fullName, LocalDate birthDate);
     List<Client> findAll();
+    List<Client> findByFullNameContaining(String namePart);
 }

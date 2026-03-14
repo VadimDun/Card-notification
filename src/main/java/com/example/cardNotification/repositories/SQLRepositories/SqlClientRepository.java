@@ -1,5 +1,6 @@
 package com.example.cardNotification.repositories.SQLRepositories;
 
+import com.example.cardNotification.models.Card;
 import com.example.cardNotification.models.Client;
 import com.example.cardNotification.repositories.ClientRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -39,5 +40,10 @@ public class SqlClientRepository implements ClientRepository {
     @Override
     public List<Client> findAll() {
         return jpaClientRepository.findAll();
+    }
+
+    @Override
+    public List<Client> findByFullNameContaining(String namePart){
+        return jpaClientRepository.findByFullNameContaining(namePart);
     }
 }

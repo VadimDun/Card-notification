@@ -34,8 +34,7 @@
         @PostMapping
         public String addClient(@ModelAttribute("client") final Client client, RedirectAttributes redirectAttributes) {
 //            boolean isDuplicate = clientService.getAllClients().stream().anyMatch(c -> c.equals(client));
-            Optional<Client> isDuplicate = clientService.getAllClients().stream()
-                    .filter(c -> c.equals(client)).findFirst();
+            Optional<Client> isDuplicate = clientService.findByFullNameAndBirthDate(client.getFullName(), client.getBirthDate());
             if (isDuplicate.isPresent()) {
                 redirectAttributes.addFlashAttribute("duplicateMessage",
                         "Такой клиент уже существует с id: "
@@ -50,8 +49,7 @@
 
         @PostMapping("/search")
         public String search(@RequestParam("searchTerm") String name, Model model) {
-            List<Client> searchResults = clientService.getAllClients()
-                    .stream().filter(item -> item.getFullName().toLowerCase().contains(name.toLowerCase())).toList();
+            List<Client> searchResults = clientService.searchClients(name);
 
             model.addAttribute("clients", searchResults);
             model.addAttribute("searchName", name);

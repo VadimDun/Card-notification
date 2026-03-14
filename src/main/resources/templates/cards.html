@@ -45,9 +45,13 @@
             <td th:text="${item.client != null ? item.client.fullName : 'No client'}">No Client</td>
             <td th:text="${item.active}">false</td>
             <td>
-                <form th:action="@{/cards/delete/{id}(id=${item.id})}" method="post">
+                <form th:if="${item.active}"
+                      th:action="@{/cards/delete/{id}(id=${item.id})}"
+                      method="post"
+                      onsubmit="return confirm('Вы уверены, что хотите закрыть эту карту?');">
                     <button type="submit">Закрыть карту</button>
                 </form>
+                <span th:unless="${item.active}">Карта закрыта</span>
             </td>
         </tr>
     </table>
