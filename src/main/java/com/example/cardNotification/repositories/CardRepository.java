@@ -15,5 +15,6 @@ public interface CardRepository {
     List<Card> findByExpDate(LocalDate date);
     List<Card> findExpiredCards();
     List<Card> findAll();
+    List<Card> findByCardNumberContaining(String numberPart);
     void delete(long id);
 }

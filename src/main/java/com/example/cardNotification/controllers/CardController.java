@@ -43,8 +43,7 @@ public class CardController {
         if (card.getExpDate().isAfter(LocalDate.now()))
             card.setActive(true);
 
-        Optional<Card> isDuplicate = cardService.getAllCards().stream()
-                .filter(c -> c.getCardNumber().equals(card.getCardNumber())).findFirst();
+        Optional<Card> isDuplicate = cardService.findByCardNumber(card.getCardNumber());
 
         Optional<Client> client = clientService.getClientById(clientId);
         client.ifPresent(card::setClient);
@@ -65,9 +64,7 @@ public class CardController {
 
     @PostMapping("/search")
     public String search(@RequestParam("searchTerm") String cardNumber, Model model) {
-        List<Card> searchResults = cardService.getAllCards()
-                .stream().filter(item -> item.getCardNumber().contains(cardNumber)).toList();
-
+        List<Card> searchResults = cardService.searchCards(cardNumber);
         model.addAttribute("cards", searchResults);
         model.addAttribute("searchNumber", cardNumber);
         return "cards";
@@ -75,7 +72,8 @@ public class CardController {
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") long id) {
-        cardService.deleteById(id);
+//        cardService.deleteById(id);
+        cardService.cancelCard(id);
         return "redirect:/cards";
     }
 }

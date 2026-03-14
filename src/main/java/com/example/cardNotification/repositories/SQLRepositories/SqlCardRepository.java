@@ -51,6 +51,11 @@ public class SqlCardRepository implements CardRepository {
     }
 
     @Override
+    public List<Card> findByCardNumberContaining(String numberPart) {
+        return jpacardRepository.findByCardNumberContaining(numberPart);
+    }
+
+    @Override
     public void delete(long id){
         jpacardRepository.deleteById(id);
     }

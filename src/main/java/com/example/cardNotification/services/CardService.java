@@ -90,6 +90,14 @@ public class CardService {
         return cardRepository.findAll();
     }
 
+    public Optional<Card> findByCardNumber(String number) {
+        return cardRepository.findByCardNumber(number);
+    }
+
+    public List<Card> searchCards(String number) {
+        return cardRepository.findByCardNumberContaining(number);
+    }
+
     private String generateCardNumber() {
         Random random = new Random();
         StringBuilder cardNumber = new StringBuilder(16);

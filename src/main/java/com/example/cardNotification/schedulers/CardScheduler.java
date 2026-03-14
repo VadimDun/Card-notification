@@ -14,6 +14,8 @@ public class CardScheduler {
     private final CardService cardService;
     private final CardNotifier cardNotifier;
 
+    private final boolean sendMessage = false; // for testing
+
     public CardScheduler(CardService cardService, CardNotifier cardNotifier) {
         this.cardService = cardService;
         this.cardNotifier = cardNotifier;
@@ -37,11 +39,13 @@ public class CardScheduler {
                     newCard.getExpDate()
             );
             cardNotifier.notifyClient(message);
-            cardNotifier.notifyByEmail(
-                    card.getClient().getEmail(),
-                    "Срок действия вашей карты истек. Мы открыли новую карту",
-                    message
-            );
+            if (sendMessage) {
+                cardNotifier.notifyByEmail(
+                        card.getClient().getEmail(),
+                        "Срок действия вашей карты истек. Мы открыли новую карту",
+                        message
+                );
+            }
             card.setNotified(true);
         }
 
@@ -55,11 +59,13 @@ public class CardScheduler {
                     week
             );
             cardNotifier.notifyClient(message);
-            cardNotifier.notifyByEmail(
-                    card.getClient().getEmail(),
-                    "Срок действия вашей карты истекает через неделю",
-                    message
-            );
+            if (sendMessage) {
+                cardNotifier.notifyByEmail(
+                        card.getClient().getEmail(),
+                        "Срок действия вашей карты истекает через неделю",
+                        message
+                );
+            }
             card.setNotified(true);
         }
 
@@ -73,11 +79,13 @@ public class CardScheduler {
                     week2
             );
             cardNotifier.notifyClient(message);
-            cardNotifier.notifyByEmail(
-                    card.getClient().getEmail(),
-                    "Срок действия вашей карты истекает через 2 недели",
-                    message
-            );
+            if (sendMessage) {
+                cardNotifier.notifyByEmail(
+                        card.getClient().getEmail(),
+                        "Срок действия вашей карты истекает через 2 недели",
+                        message
+                );
+            }
             card.setNotified(true);
         }
     }

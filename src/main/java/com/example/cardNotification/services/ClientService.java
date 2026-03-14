@@ -42,4 +42,12 @@ public class ClientService {
     public List<Client> getAllClients() {
         return clientRepository.findAll();
     }
+
+    public Optional<Client> findByFullNameAndBirthDate(String fullName, LocalDate birthDate) {
+        return clientRepository.findByNameAndBirthDate(fullName, birthDate);
+    }
+
+    public List<Client> searchClients(String fullName) {
+        return clientRepository.findByFullNameContaining(fullName);
+    }
 }

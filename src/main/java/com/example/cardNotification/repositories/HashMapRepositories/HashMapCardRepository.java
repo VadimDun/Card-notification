@@ -62,6 +62,11 @@ public class HashMapCardRepository implements CardRepository {
     }
 
     @Override
+    public List<Card> findByCardNumberContaining(String numberPart){
+        return new ArrayList<>(cards.values().stream().filter(c -> c.getCardNumber().contains(numberPart)).toList());
+    }
+
+    @Override
     public void delete(long id){
         cards.remove(id);
     }

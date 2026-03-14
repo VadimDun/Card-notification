@@ -55,4 +55,9 @@ public class HashMapClientRepository implements ClientRepository {
     public List<Client> findAll() {
         return new ArrayList<>(clients.values());
     }
+
+    @Override
+    public List<Client> findByFullNameContaining(String namePart){
+        return new ArrayList<>(clients.values().stream().filter(client -> client.getFullName().contains(namePart)).toList());
+    }
 }
