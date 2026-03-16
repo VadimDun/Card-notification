@@ -51,7 +51,6 @@ public class CardService {
     }
 
     public void saveCard(Card card) {
-        System.out.println(card.isNotified());
         cardRepository.save(card);
     }
 
