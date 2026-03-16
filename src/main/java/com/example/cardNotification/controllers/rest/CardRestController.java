@@ -1,6 +1,7 @@
 package com.example.cardNotification.controllers.rest;
 
 import com.example.cardNotification.dto.CardDto;
+import com.example.cardNotification.dto.card.CardRequestDto;
 import com.example.cardNotification.mappers.CardMapper;
 import com.example.cardNotification.models.Card;
 import com.example.cardNotification.services.CardService;
@@ -24,8 +25,10 @@ public class CardRestController {
     }
 
     @PostMapping
-    public CardDto createCard(@RequestBody Card card) {
-        return CardMapper.MapToDto(cardService.createCard(card));
+    public CardDto createCard(@RequestBody CardRequestDto cardDto) {
+        Card card = CardMapper.MapFromDto(cardDto);
+        Card createdCard = cardService.createCard(card);
+        return CardMapper.MapToDto(createdCard);
     }
 
     @PostMapping("close/{id}")
