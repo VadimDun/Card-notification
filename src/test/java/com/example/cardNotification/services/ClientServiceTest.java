@@ -41,11 +41,12 @@ class ClientServiceTest {
     void createClient_WithNameAndBirthDate_ShouldReturnExistingClient_WhenFound() {
         String fullName = "Петров Иван Иванович";
         LocalDate birthDate = LocalDate.of(2000, 6, 1);
+        String email = "example@gmail.com";
 
         when(clientRepository.findByNameAndBirthDate(fullName, birthDate))
                 .thenReturn(Optional.of(testClient));
 
-        Client result = clientService.createClient(fullName, birthDate);
+        Client result = clientService.createClient(fullName, birthDate, email);
 
         assertThat(result).isEqualTo(testClient);
         verify(clientRepository).findByNameAndBirthDate(fullName, birthDate);
@@ -56,15 +57,17 @@ class ClientServiceTest {
     void createClient_WithNameAndBirthDate_ShouldCreateNewClient_WhenNotFound() {
         String fullName = "Андреев Евгений Александрович";
         LocalDate birthDate = LocalDate.of(2005, 11, 24);
+        String email = "example@gmail.com";
         Client newClient = new Client();
         newClient.setFullName(fullName);
         newClient.setBirthDate(birthDate);
+        newClient.setEmail(email);
 
         when(clientRepository.findByNameAndBirthDate(fullName, birthDate))
                 .thenReturn(Optional.empty());
         when(clientRepository.save(any(Client.class))).thenReturn(newClient);
 
-        Client result = clientService.createClient(fullName, birthDate);
+        Client result = clientService.createClient(fullName, birthDate, email);
 
         assertThat(result.getFullName()).isEqualTo(fullName);
         assertThat(result.getBirthDate()).isEqualTo(birthDate);

@@ -1,10 +1,13 @@
 package com.example.cardNotification.controllers.rest;
 
-import com.example.cardNotification.dto.CardDto;
 import com.example.cardNotification.dto.card.CardRequestDto;
+import com.example.cardNotification.dto.card.CardResponseDto;
 import com.example.cardNotification.mappers.CardMapper;
 import com.example.cardNotification.models.Card;
 import com.example.cardNotification.services.CardService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,21 +22,24 @@ public class CardRestController {
     }
 
     @GetMapping
-    public List<CardDto> getAllCards() {
+    public List<CardResponseDto> getAllCards() {
         return cardService.getAllCards()
-                .stream().map(CardMapper::MapToDto).toList();
+                .stream().map(CardMapper::MapToResponse).toList();
     }
 
     @PostMapping
-    public CardDto createCard(@RequestBody CardRequestDto cardDto) {
+    public ResponseEntity<CardResponseDto> createCard(@Valid @RequestBody CardRequestDto cardDto) {
         Card card = CardMapper.MapFromDto(cardDto);
         Card createdCard = cardService.createCard(card);
-        return CardMapper.MapToDto(createdCard);
+        CardResponseDto response = CardMapper.MapToResponse(createdCard);
+
+        return ResponseEntity.status(201).body(response);
     }
 
-    @PostMapping("close/{id}")
-    public void closeCard(@PathVariable long id) {
+    @PostMapping("/close/{id}")
+    public ResponseEntity<Void> closeCard(@PathVariable @Positive long id) {
         cardService.cancelCard(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

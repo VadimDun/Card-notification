@@ -1,11 +1,15 @@
 package com.example.cardNotification.controllers.rest;
 
-import com.example.cardNotification.dto.ClientDto;
 import com.example.cardNotification.dto.client.ClientRequestDto;
 import com.example.cardNotification.dto.client.ClientResponseDto;
+import com.example.cardNotification.dto.client.ClientServiceDto;
 import com.example.cardNotification.mappers.ClientMapper;
 import com.example.cardNotification.models.Client;
 import com.example.cardNotification.services.ClientService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,15 +30,17 @@ public class ClientRestController {
     }
 
     @GetMapping("/{id}")
-    public ClientResponseDto getClientById(@PathVariable long id) {
-        return ClientMapper.MapToResponse(clientService.getClientById(id)
-                .orElseThrow(() -> new RuntimeException("Клиент не найден")));
+    public ResponseEntity<ClientResponseDto> getClientById(@PathVariable @Positive long id) {
+        return clientService.getClientById(id)
+                .map(client -> ResponseEntity.ok(ClientMapper.MapToResponse(client)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ClientResponseDto createClient(@RequestBody ClientRequestDto clientDto) {
-        Client client = ClientMapper.MapFromDto(clientDto);
-        Client createdClient = clientService.createClient(client);
-        return ClientMapper.MapToResponse(clientService.createClient(createdClient));
+    public ResponseEntity<ClientResponseDto> createClient(@Valid @RequestBody ClientRequestDto clientDto) {
+        ClientServiceDto response = clientService.createClient(clientDto);
+        if (response.isCreated())
+            return ResponseEntity.status(201).body(response.getClientResponseDto());
+        return ResponseEntity.status(200).body(response.getClientResponseDto());
     }
 }

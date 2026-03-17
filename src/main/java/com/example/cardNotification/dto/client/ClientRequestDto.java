@@ -1,5 +1,6 @@
 package com.example.cardNotification.dto.client;
 
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +14,16 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ClientRequestDto {
 
+    @NotBlank
+    @Size(min = 2, max = 100)
     private String fullName;
+
+    @NotNull
+    @Past
     private LocalDate birthDate;
+
+    @Email
+    @NotBlank
     private String email;
 
 }
