@@ -1,5 +1,7 @@
 package com.example.cardNotification.services;
 
+import com.example.cardNotification.dto.card.CardRequestDto;
+import com.example.cardNotification.dto.card.CardServiceDto;
 import com.example.cardNotification.models.Card;
 import com.example.cardNotification.models.Client;
 import com.example.cardNotification.repositories.CardRepository;
@@ -38,6 +40,7 @@ class CardServiceTest {
     private CardService cardService;
     private Client testClient;
     private Card testCard;
+    private CardRequestDto testCardRequestDto;
 
     @BeforeEach
     void setUp() {
@@ -57,6 +60,13 @@ class CardServiceTest {
         testCard.setActive(true);
         testCard.setNotified(false);
         testCard.setClient(testClient);
+
+        testCardRequestDto = new CardRequestDto(
+                "4200123456789012",
+                LocalDate.now(),
+                LocalDate.now().plusYears(4),
+                1L
+        );
     }
 
     @Test
@@ -101,6 +111,105 @@ class CardServiceTest {
         assertThat(result).isEqualTo(testCard);
         verify(cardRepository, times(3)).findByCardNumber(anyString());
         verify(cardRepository).save(testCard);
+    }
+
+    @Test
+    void createCard_WithValidRequestDto_ShouldCreateCardAndReturnSuccess() {
+        when(clientRepository.findById(1L)).thenReturn(Optional.of(testClient));
+        when(cardRepository.findByCardNumber("4200123456789012")).thenReturn(Optional.empty());
+        when(cardRepository.save(any(Card.class))).thenReturn(testCard);
+
+        CardServiceDto result = cardService.createCard(testCardRequestDto);
+
+        assertThat(result.isCreated()).isTrue();
+        assertThat(result.getCardResponseDto()).isNotNull();
+        assertThat(result.getCardResponseDto().getId()).isEqualTo(1L);
+        assertThat(result.getCardResponseDto().getCardNumber()).isEqualTo("4200123456789012");
+        assertThat(result.getCardResponseDto().getClientId()).isEqualTo(1L);
+        assertThat(result.getCardResponseDto().getClientName()).isEqualTo("Петров Иван Иванович");
+        assertThat(result.getCardResponseDto().isActive()).isTrue();
+
+        verify(clientRepository).findById(1L);
+        verify(cardRepository).findByCardNumber("4200123456789012");
+        verify(cardRepository).save(any(Card.class));
+    }
+
+    @Test
+    void createCard_WithDuplicateCardNumber_ShouldGenerateNewNumberAndCreateCard() {
+        when(clientRepository.findById(1L)).thenReturn(Optional.of(testClient));
+        when(cardRepository.findByCardNumber(anyString()))
+                .thenReturn(Optional.of(new Card()))
+                .thenReturn(Optional.empty());
+        when(cardRepository.save(any(Card.class))).thenReturn(testCard);
+
+        CardServiceDto result = cardService.createCard(testCardRequestDto);
+
+        assertThat(result.isCreated()).isTrue();
+        assertThat(result.getCardResponseDto()).isNotNull();
+        assertThat(testCardRequestDto.getCardNumber()).isNotEqualTo("4200123456789012");
+
+        verify(cardRepository, times(2)).findByCardNumber(anyString());
+        verify(cardRepository).save(any(Card.class));
+    }
+
+    @Test
+    void createCard_WithNonExistentClient_ShouldReturnFailure() {
+        when(clientRepository.findById(999L)).thenReturn(Optional.empty());
+
+        CardRequestDto requestWithInvalidClient = new CardRequestDto(
+                "4200123456789012",
+                LocalDate.now(),
+                LocalDate.now().plusYears(4),
+                999L
+        );
+
+        CardServiceDto result = cardService.createCard(requestWithInvalidClient);
+
+        assertThat(result.isCreated()).isFalse();
+        assertThat(result.getCardResponseDto()).isNull();
+
+        verify(clientRepository).findById(999L);
+        verify(cardRepository, never()).findByCardNumber(anyString());
+        verify(cardRepository, never()).save(any(Card.class));
+    }
+
+    @Test
+    void createCard_ShouldSetActiveFalse_WhenExpDateIsToday() {
+        LocalDate today = LocalDate.now();
+
+        testCardRequestDto.setExpDate(today);
+
+        when(clientRepository.findById(1L)).thenReturn(Optional.of(testClient));
+        when(cardRepository.findByCardNumber(anyString())).thenReturn(Optional.empty());
+        when(cardRepository.save(any(Card.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        CardServiceDto result = cardService.createCard(testCardRequestDto);
+
+        verify(cardRepository).save(cardCaptor.capture());
+        Card savedCard = cardCaptor.getValue();
+
+        assertThat(savedCard.isActive()).isFalse();
+        assertThat(savedCard.isNotified()).isFalse();
+        assertThat(result.getCardResponseDto().isActive()).isFalse();
+    }
+
+    @Test
+    void createCard_ShouldSetActiveTrue_WhenExpDateIsTomorrow() {
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+
+        testCardRequestDto.setExpDate(tomorrow);
+
+        when(clientRepository.findById(1L)).thenReturn(Optional.of(testClient));
+        when(cardRepository.findByCardNumber(anyString())).thenReturn(Optional.empty());
+        when(cardRepository.save(any(Card.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        CardServiceDto result = cardService.createCard(testCardRequestDto);
+
+        verify(cardRepository).save(cardCaptor.capture());
+        Card savedCard = cardCaptor.getValue();
+
+        assertThat(savedCard.isActive()).isTrue();
+        assertThat(result.getCardResponseDto().isActive()).isTrue();
     }
 
     @Test
