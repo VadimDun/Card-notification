@@ -1,5 +1,9 @@
 package com.example.cardNotification.services;
 
+import com.example.cardNotification.dto.client.ClientServiceDto;
+import com.example.cardNotification.dto.client.ClientRequestDto;
+import com.example.cardNotification.dto.client.ClientResponseDto;
+import com.example.cardNotification.mappers.ClientMapper;
 import com.example.cardNotification.models.Client;
 import com.example.cardNotification.repositories.ClientRepository;
 import org.springframework.stereotype.Service;
@@ -17,10 +21,34 @@ public class ClientService {
     }
 
     public Client createClient(Client client) {
-        return clientRepository.save(client);
+        Optional<Client> clientOptional = clientRepository.findByNameAndBirthDate(client.getFullName(), client.getBirthDate());
+        return clientOptional.orElseGet(() -> clientRepository.save(client));
     }
 
-    public Client createClient(String fullName, LocalDate birthDate) {
+    public ClientServiceDto createClient(ClientRequestDto clientRequest) {
+        Optional<Client> clientOptional = clientRepository.findByNameAndBirthDate(clientRequest.getFullName(), clientRequest.getBirthDate());
+        ClientServiceDto clientSDto = new ClientServiceDto();
+
+        if (clientOptional.isPresent()) {
+            Client clientRes = clientOptional.get();
+            ClientResponseDto clientResponseDto = ClientMapper.MapToResponse(clientRes);
+
+            clientSDto.setClientResponseDto(clientResponseDto);
+            clientSDto.setCreated(false);
+        }
+        else{
+            Client client = ClientMapper.MapFromDto(clientRequest);
+
+            Client clientRes = clientRepository.save(client);
+            ClientResponseDto clientResponseDto = ClientMapper.MapToResponse(clientRes);
+
+            clientSDto.setClientResponseDto(clientResponseDto);
+            clientSDto.setCreated(true);
+        }
+        return clientSDto;
+    }
+
+    public Client createClient(String fullName, LocalDate birthDate, String email) {
         Optional<Client> clientOptional =
                 clientRepository.findByNameAndBirthDate(fullName, birthDate);
 
@@ -31,6 +59,7 @@ public class ClientService {
         Client client = new Client();
         client.setFullName(fullName);
         client.setBirthDate(birthDate);
+        client.setEmail(email);
 
         return clientRepository.save(client);
     }

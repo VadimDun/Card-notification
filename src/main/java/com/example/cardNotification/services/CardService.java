@@ -1,5 +1,9 @@
 package com.example.cardNotification.services;
 
+import com.example.cardNotification.dto.card.CardRequestDto;
+import com.example.cardNotification.dto.card.CardResponseDto;
+import com.example.cardNotification.dto.card.CardServiceDto;
+import com.example.cardNotification.mappers.CardMapper;
 import com.example.cardNotification.models.Card;
 import com.example.cardNotification.models.Client;
 import com.example.cardNotification.repositories.CardRepository;
@@ -29,6 +33,33 @@ public class CardService {
         }
 
         return cardRepository.save(card);
+    }
+
+    public CardServiceDto createCard(CardRequestDto cardRequestDto) {
+        Optional<Client> client = clientRepository.findById(cardRequestDto.getClientId());
+
+        CardServiceDto cardServiceDto = new CardServiceDto();
+
+        if (client.isPresent()) {
+            while (cardRepository.findByCardNumber(cardRequestDto.getCardNumber()).isPresent()) {
+                String newCardNumber = generateCardNumber();
+                cardRequestDto.setCardNumber(newCardNumber);
+            }
+
+            Card card = CardMapper.MapFromDto(cardRequestDto);
+
+            card.setClient(client.get());
+            card.setActive(!card.getExpDate().isBefore(LocalDate.now().plusDays(1)));
+            card.setNotified(false);
+
+            Card createdCard = cardRepository.save(card);
+            CardResponseDto cardResponseDto = CardMapper.MapToResponse(createdCard);
+            cardServiceDto.setCardResponseDto(cardResponseDto);
+            cardServiceDto.setCreated(true);
+        }
+        else cardServiceDto.setCreated(false);
+
+        return cardServiceDto;
     }
 
     public Card createCard(Long clientId, LocalDate issueDate, LocalDate expDate) {
@@ -62,6 +93,9 @@ public class CardService {
         }
 
         Card card = cardOptional.get();
+        if (!card.isActive())
+            return false;
+
         card.setActive(false);
 
         cardRepository.save(card);
