@@ -2,6 +2,7 @@ package com.example.cardNotification.controllers.rest;
 
 import com.example.cardNotification.dto.card.CardRequestDto;
 import com.example.cardNotification.dto.card.CardResponseDto;
+import com.example.cardNotification.dto.card.CardServiceDto;
 import com.example.cardNotification.mappers.CardMapper;
 import com.example.cardNotification.models.Card;
 import com.example.cardNotification.services.CardService;
@@ -28,18 +29,18 @@ public class CardRestController {
     }
 
     @PostMapping
-    public ResponseEntity<CardResponseDto> createCard(@Valid @RequestBody CardRequestDto cardDto) {
-        Card card = CardMapper.MapFromDto(cardDto);
-        Card createdCard = cardService.createCard(card);
-        CardResponseDto response = CardMapper.MapToResponse(createdCard);
-
-        return ResponseEntity.status(201).body(response);
+    public ResponseEntity<?> createCard(@Valid @RequestBody CardRequestDto cardDto) {
+        CardServiceDto response = cardService.createCard(cardDto);
+        if (response.isCreated())
+            return ResponseEntity.status(201).body(response.getCardResponseDto());
+        else return ResponseEntity.status(404).body("Клиента с id: " + cardDto.getClientId().toString() + " не существует");
     }
 
     @PostMapping("/close/{id}")
     public ResponseEntity<Void> closeCard(@PathVariable @Positive long id) {
-        cardService.cancelCard(id);
-        return ResponseEntity.noContent().build();
+        if (cardService.cancelCard(id))
+            return ResponseEntity.noContent().build();
+        else return ResponseEntity.notFound().build();
     }
 
 }

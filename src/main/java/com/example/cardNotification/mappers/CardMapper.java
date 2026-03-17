@@ -9,6 +9,7 @@ public class CardMapper {
     public static Card MapFromDto(CardRequestDto dto) {
         Card card = new Card();
         card.setCardNumber(dto.getCardNumber());
+        card.setIssueDate(dto.getIssueDate());
         card.setExpDate(dto.getExpDate());
         return card;
     }
