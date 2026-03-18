@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -159,7 +158,7 @@ class CardRestControllerTest {
 
     @Test
     void closeCard_WithExistingId_ShouldReturnNoContent() throws Exception {
-        when(cardService.cancelCard(1L)).thenReturn(true);
+        when(cardService.closeCard(1L)).thenReturn(true);
 
         mockMvc.perform(post("/rest/cards/close/1"))
                 .andExpect(status().isNoContent());
@@ -167,7 +166,7 @@ class CardRestControllerTest {
 
     @Test
     void closeCard_WithNonExistentId_ShouldReturnNotFound() throws Exception {
-        when(cardService.cancelCard(999L)).thenReturn(false);
+        when(cardService.closeCard(999L)).thenReturn(false);
 
         mockMvc.perform(post("/rest/cards/close/999"))
                 .andExpect(status().isNotFound());
@@ -181,7 +180,7 @@ class CardRestControllerTest {
 
     @Test
     void closeCard_WithAlreadyClosedCard_ShouldReturnNotFound() throws Exception {
-        when(cardService.cancelCard(1L)).thenReturn(false);
+        when(cardService.closeCard(1L)).thenReturn(false);
 
         mockMvc.perform(post("/rest/cards/close/1"))
                 .andExpect(status().isNotFound());

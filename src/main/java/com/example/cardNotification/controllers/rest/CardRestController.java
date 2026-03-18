@@ -38,7 +38,7 @@ public class CardRestController {
 
     @PostMapping("/close/{id}")
     public ResponseEntity<Void> closeCard(@PathVariable @Positive long id) {
-        if (cardService.cancelCard(id))
+        if (cardService.closeCard(id))
             return ResponseEntity.noContent().build();
         else return ResponseEntity.notFound().build();
     }

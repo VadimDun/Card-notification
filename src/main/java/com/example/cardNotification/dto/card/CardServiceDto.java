@@ -8,4 +8,5 @@ import lombok.Setter;
 public class CardServiceDto {
     private CardResponseDto cardResponseDto;
     private boolean created;
+    private boolean numberChanged;
 }

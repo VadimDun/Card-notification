@@ -251,7 +251,7 @@ class CardServiceTest {
         when(cardRepository.findById(1L)).thenReturn(Optional.of(testCard));
         when(cardRepository.save(any(Card.class))).thenReturn(testCard);
 
-        boolean result = cardService.cancelCard(1L);
+        boolean result = cardService.closeCard(1L);
 
         assertThat(result).isTrue();
         assertThat(testCard.isActive()).isFalse();
@@ -262,7 +262,7 @@ class CardServiceTest {
     void cancelCard_ShouldReturnFalse_WhenCardDoesNotExist() {
         when(cardRepository.findById(999L)).thenReturn(Optional.empty());
 
-        boolean result = cardService.cancelCard(999L);
+        boolean result = cardService.closeCard(999L);
 
         assertThat(result).isFalse();
         verify(cardRepository, never()).save(any(Card.class));

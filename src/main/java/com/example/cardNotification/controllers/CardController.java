@@ -1,11 +1,17 @@
 package com.example.cardNotification.controllers;
 
+import com.example.cardNotification.dto.card.CardRequestDto;
+import com.example.cardNotification.dto.card.CardResponseDto;
+import com.example.cardNotification.dto.card.CardServiceDto;
+import com.example.cardNotification.mappers.CardMapper;
 import com.example.cardNotification.models.Card;
 import com.example.cardNotification.models.Client;
 import com.example.cardNotification.services.CardService;
 import com.example.cardNotification.services.ClientService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -33,30 +39,33 @@ public class CardController {
 
     @GetMapping("/new")
     public String newCard(Model model) {
-        model.addAttribute("card", new Card());
+        model.addAttribute("card", new CardRequestDto());
         model.addAttribute("clients", clientService.getAllClients());
         return "new-card";
     }
 
     @PostMapping
-    public String addCard(@ModelAttribute("card") Card card, @RequestParam("clientId") Long clientId, RedirectAttributes redirectAttributes) {
-        if (card.getExpDate().isAfter(LocalDate.now()))
-            card.setActive(true);
+    public String addCard(@Valid @ModelAttribute("card") CardRequestDto cardDto,
+                          BindingResult result,
+                          @RequestParam("clientId") Long clientId,
+                          RedirectAttributes redirectAttributes,
+                          Model model) {
 
-        Optional<Card> isDuplicate = cardService.findByCardNumber(card.getCardNumber());
+        if (result.hasErrors()) {
+            model.addAttribute("clients", clientService.getAllClients());
+            return "new-card";
+        }
 
-        Optional<Client> client = clientService.getClientById(clientId);
-        client.ifPresent(card::setClient);
+        CardServiceDto response = cardService.createCard(cardDto);
 
-        cardService.createCard(card);
-
-        if (isDuplicate.isPresent()) {
+        CardResponseDto cardResponseDto = response.getCardResponseDto();
+        if (response.isNumberChanged()) {
             redirectAttributes.addFlashAttribute("message",
-                    "Карта с таким номером уже существует (id: " + isDuplicate.get().getId() + "), номер был изменен на "
-                            + card.getCardNumber() + ". Добавлена новая карта с id: " + card.getId());
+                    "Карта с таким номером уже существует, номер был изменен на "
+                            + cardResponseDto.getCardNumber() + ". Добавлена новая карта с id: " + cardResponseDto.getId());
         } else {
             redirectAttributes.addFlashAttribute("message",
-                    "Добавлена новая карта с id: " + card.getId());
+                    "Добавлена новая карта с id: " + cardResponseDto.getId());
         }
 
         return "redirect:/cards";
@@ -70,10 +79,9 @@ public class CardController {
         return "cards";
     }
 
-    @PostMapping("/delete/{id}")
+    @PostMapping("/close/{id}")
     public String delete(@PathVariable("id") long id) {
-//        cardService.deleteById(id);
-        cardService.cancelCard(id);
+        cardService.closeCard(id);
         return "redirect:/cards";
     }
 }

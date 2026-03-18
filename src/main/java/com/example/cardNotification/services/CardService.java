@@ -14,7 +14,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.UUID;
 
 @Service
 public class CardService {
@@ -44,6 +43,8 @@ public class CardService {
             while (cardRepository.findByCardNumber(cardRequestDto.getCardNumber()).isPresent()) {
                 String newCardNumber = generateCardNumber();
                 cardRequestDto.setCardNumber(newCardNumber);
+                
+                cardServiceDto.setNumberChanged(true);
             }
 
             Card card = CardMapper.MapFromDto(cardRequestDto);
@@ -85,7 +86,7 @@ public class CardService {
         cardRepository.save(card);
     }
 
-    public boolean cancelCard(Long cardId) {
+    public boolean closeCard(Long cardId) {
         Optional<Card> cardOptional = cardRepository.findById(cardId);
 
         if (cardOptional.isEmpty()) {
