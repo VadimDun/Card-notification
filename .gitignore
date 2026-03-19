@@ -43,7 +43,7 @@ build/
 .vscode/
 
 notifications.txt
-src/main/resources/application-local.properties
+demo-module/src/main/resources/application-local.properties
 
 /postman
 /.postman
