@@ -2,6 +2,7 @@ package com.example.cardNotification.schedulers;
 
 import com.example.cardNotification.models.Card;
 import com.example.cardNotification.notifiers.CardNotifier;
+import com.example.cardNotification.notifiers.FileCardNotifier;
 import com.example.cardNotification.services.CardService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -14,15 +15,13 @@ public class CardScheduler {
     private final CardService cardService;
     private final CardNotifier cardNotifier;
 
-    private final boolean sendMessage = false; // for testing
-
     public CardScheduler(CardService cardService, CardNotifier cardNotifier) {
         this.cardService = cardService;
         this.cardNotifier = cardNotifier;
     }
 
     @Scheduled(fixedRate = 30000) // for testing
-//    @Scheduled(cron = "0 0 0 * * *")
+//    @Scheduled(cron = "${cron.time}")
     // todo проверка на отправку через 1/2 недели(?)
     public void checkExpiringCardsForNotification() {
         checkExpired();
@@ -44,14 +43,10 @@ public class CardScheduler {
                     newCard.getCardNumber(),
                     newCard.getExpDate()
             );
-            cardNotifier.notifyClient(message);
-            if (sendMessage) {
-                cardNotifier.notifyByEmail(
-                        card.getClient().getEmail(),
-                        "Срок действия вашей карты истек. Мы открыли новую карту",
-                        message
-                );
-            }
+            cardNotifier.notifyClient(
+                    card.getClient().getEmail(),
+                    "Срок действия вашей карты истек. Мы открыли новую карту",
+                    message);
             card.setNotified(true);
             cardService.saveCard(card);
         }
@@ -67,14 +62,11 @@ public class CardScheduler {
                     card.getCardNumber(),
                     week
             );
-            cardNotifier.notifyClient(message);
-            if (sendMessage) {
-                cardNotifier.notifyByEmail(
-                        card.getClient().getEmail(),
-                        "Срок действия вашей карты истекает через неделю",
-                        message
-                );
-            }
+            cardNotifier.notifyClient(
+                    card.getClient().getEmail(),
+                    "Срок действия вашей карты истекает через неделю",
+                    message
+            );
         }
     }
 
@@ -88,14 +80,11 @@ public class CardScheduler {
                     card.getCardNumber(),
                     week2
             );
-            cardNotifier.notifyClient(message);
-            if (sendMessage) {
-                cardNotifier.notifyByEmail(
-                        card.getClient().getEmail(),
-                        "Срок действия вашей карты истекает через 2 недели",
-                        message
-                );
-            }
+            cardNotifier.notifyClient(
+                    card.getClient().getEmail(),
+                    "Срок действия вашей карты истекает через 2 недели",
+                    message
+            );
         }
     }
 }
