@@ -4,7 +4,6 @@ import com.example.cardNotification.dto.card.CardRequestDto;
 import com.example.cardNotification.dto.card.CardResponseDto;
 import com.example.cardNotification.dto.card.CardServiceDto;
 import com.example.cardNotification.mappers.CardMapper;
-import com.example.cardNotification.models.Card;
 import com.example.cardNotification.services.CardService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;

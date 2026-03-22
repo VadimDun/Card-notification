@@ -6,7 +6,6 @@ import com.example.cardNotification.models.Card;
 import com.example.cardNotification.models.Client;
 import com.example.cardNotification.repositories.CardRepository;
 import com.example.cardNotification.repositories.ClientRepository;
-import com.example.cardNotification.services.CardService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

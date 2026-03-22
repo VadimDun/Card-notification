@@ -3,7 +3,6 @@ package com.example.cardNotification.repositories.HashMapRepositories;
 import com.example.cardNotification.models.Card;
 import com.example.cardNotification.repositories.CardRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -12,7 +11,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
-//@Primary
 @ConditionalOnProperty(name = "storage.type", havingValue = "memory")
 public class HashMapCardRepository implements CardRepository {
     private final Map<Long, Card> cards = new ConcurrentHashMap<>();

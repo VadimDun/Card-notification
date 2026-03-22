@@ -4,7 +4,6 @@ import com.example.cardNotification.models.Client;
 import com.example.cardNotification.repositories.ClientRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -13,7 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
-//@Primary
 @ConditionalOnProperty(name = "storage.type", havingValue = "memory")
 public class HashMapClientRepository implements ClientRepository {
     private final Map<Long, Client> clients = new ConcurrentHashMap<>();

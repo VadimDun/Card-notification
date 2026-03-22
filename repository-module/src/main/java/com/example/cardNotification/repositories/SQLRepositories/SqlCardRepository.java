@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-//@Primary
 @ConditionalOnProperty(name = "storage.type", havingValue = "sql")
 public class SqlCardRepository implements CardRepository {
     private final JPACardRepository jpacardRepository;

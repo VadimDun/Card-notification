@@ -4,11 +4,9 @@ import com.example.cardNotification.dto.client.ClientRequestDto;
 import com.example.cardNotification.dto.client.ClientResponseDto;
 import com.example.cardNotification.dto.client.ClientServiceDto;
 import com.example.cardNotification.mappers.ClientMapper;
-import com.example.cardNotification.models.Client;
 import com.example.cardNotification.services.ClientService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -3,9 +3,7 @@ package com.example.cardNotification.controllers;
 import com.example.cardNotification.dto.card.CardRequestDto;
 import com.example.cardNotification.dto.card.CardResponseDto;
 import com.example.cardNotification.dto.card.CardServiceDto;
-import com.example.cardNotification.mappers.CardMapper;
 import com.example.cardNotification.models.Card;
-import com.example.cardNotification.models.Client;
 import com.example.cardNotification.services.CardService;
 import com.example.cardNotification.services.ClientService;
 import jakarta.validation.Valid;
@@ -15,9 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/cards")

@@ -25,6 +25,9 @@
 		<module>service-module</module>
 		<module>demo-module</module>
 		<module>notification-module</module>
+        <module>api-module</module>
+		<module>repository-module</module>
+		<module>model-module</module>
 	</modules>
 	<scm>
 		<connection/>

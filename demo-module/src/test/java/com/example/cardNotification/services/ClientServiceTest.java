@@ -1,11 +1,9 @@
 package com.example.cardNotification.services;
 
 import com.example.cardNotification.dto.client.ClientRequestDto;
-import com.example.cardNotification.dto.client.ClientResponseDto;
 import com.example.cardNotification.dto.client.ClientServiceDto;
 import com.example.cardNotification.models.Client;
 import com.example.cardNotification.repositories.ClientRepository;
-import com.example.cardNotification.services.ClientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,12 +13,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

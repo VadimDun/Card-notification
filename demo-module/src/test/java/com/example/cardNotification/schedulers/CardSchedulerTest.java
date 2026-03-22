@@ -3,7 +3,6 @@ package com.example.cardNotification.schedulers;
 import com.example.cardNotification.models.Card;
 import com.example.cardNotification.models.Client;
 import com.example.cardNotification.notifiers.CardNotifier;
-import com.example.cardNotification.schedulers.CardScheduler;
 import com.example.cardNotification.services.CardService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
