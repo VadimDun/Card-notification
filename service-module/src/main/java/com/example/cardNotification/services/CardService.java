@@ -8,6 +8,8 @@ import com.example.cardNotification.models.Card;
 import com.example.cardNotification.models.Client;
 import com.example.cardNotification.repositories.CardRepository;
 import com.example.cardNotification.repositories.ClientRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,6 +22,8 @@ public class CardService {
     private final CardRepository cardRepository;
     private final ClientRepository clientRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(CardService.class);
+
     public CardService(CardRepository cardRepository, ClientRepository clientRepository) {
         this.cardRepository = cardRepository;
         this.clientRepository = clientRepository;
@@ -31,6 +35,7 @@ public class CardService {
             card.setCardNumber(newCardNumber);
         }
 
+        logger.info("Создана карта {}", card);
         return cardRepository.save(card);
     }
 
@@ -57,8 +62,12 @@ public class CardService {
             CardResponseDto cardResponseDto = CardMapper.MapToResponse(createdCard);
             cardServiceDto.setCardResponseDto(cardResponseDto);
             cardServiceDto.setCreated(true);
+            logger.info("Создана карта {}",createdCard);
         }
-        else cardServiceDto.setCreated(false);
+        else {
+            cardServiceDto.setCreated(false);
+            logger.warn("Карта для клиента с id:{} не создана - клиент не найден", cardRequestDto.getCardNumber());
+        }
 
         return cardServiceDto;
     }
@@ -82,6 +91,11 @@ public class CardService {
         return cardRepository.save(card);
     }
 
+    public void setNotified(Card card) {
+        card.setNotified(true);
+        saveCard(card);
+    }
+
     public void saveCard(Card card) {
         cardRepository.save(card);
     }
@@ -90,16 +104,20 @@ public class CardService {
         Optional<Card> cardOptional = cardRepository.findById(cardId);
 
         if (cardOptional.isEmpty()) {
+            logger.warn("Карта с id:{} не найдена для удаления", cardId);
             return false;
         }
 
         Card card = cardOptional.get();
-        if (!card.isActive())
+        if (!card.isActive()){
+            logger.warn("Карта с id:{} уже удалена", cardId);
             return false;
+        }
 
         card.setActive(false);
 
         cardRepository.save(card);
+        logger.info("Карта с id:{} удалена", cardId);
         return true;
     }
 
@@ -113,6 +131,8 @@ public class CardService {
         newCard.setExpDate(LocalDate.now().plusYears(4));
         newCard.setActive(true);
         newCard.setClient(oldCard.getClient());
+        logger.info("Карта с id:{} закрыта. Перевыпущена новая карта {}",
+                oldCard.getId(), newCard);
 
         return cardRepository.save(newCard);
     }

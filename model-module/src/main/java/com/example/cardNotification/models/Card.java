@@ -29,4 +29,13 @@ public class Card {
     @JoinColumn(name = "client_id")
     private Client client;
 
+    @Override
+    public String toString() {
+        return "Card: " +
+                "id=" + id +
+                ", cardNumber='" + cardNumber + '\'' +
+                ", issueDate=" + issueDate +
+                ", expDate=" + expDate +
+                ", clientId=" + (client != null ? client.getId() : null);
+    }
 }

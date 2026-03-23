@@ -38,4 +38,13 @@ public class Client {
         }
         return fullName.hashCode() & birthDate.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "Client: " +
+                "id=" + id +
+                ", fullName='" + fullName + '\'' +
+                ", birthDate=" + birthDate +
+                ", email='" + email + '\'';
+    }
 }

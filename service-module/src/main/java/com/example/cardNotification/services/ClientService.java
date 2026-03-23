@@ -6,6 +6,8 @@ import com.example.cardNotification.dto.client.ClientResponseDto;
 import com.example.cardNotification.mappers.ClientMapper;
 import com.example.cardNotification.models.Client;
 import com.example.cardNotification.repositories.ClientRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,13 +18,23 @@ import java.util.Optional;
 public class ClientService {
     private final ClientRepository clientRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(ClientService.class);
+
     public ClientService(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
     }
 
     public Client createClient(Client client) {
         Optional<Client> clientOptional = clientRepository.findByNameAndBirthDate(client.getFullName(), client.getBirthDate());
-        return clientOptional.orElseGet(() -> clientRepository.save(client));
+
+        if (clientOptional.isPresent()) {
+            logger.warn("Клиент уже существует: {}, возвращен старый клиент", client);
+            return clientOptional.get();
+        }
+
+        Client savedClient = clientRepository.save(client);
+        logger.info("Создан новый клиент: {}", savedClient);
+        return savedClient;
     }
 
     public ClientServiceDto createClient(ClientRequestDto clientRequest) {
@@ -35,6 +47,8 @@ public class ClientService {
 
             clientSDto.setClientResponseDto(clientResponseDto);
             clientSDto.setCreated(false);
+
+            logger.warn("Клиент уже существует: {}, возвращен старый клиент", clientRes);
         }
         else{
             Client client = ClientMapper.MapFromDto(clientRequest);
@@ -44,6 +58,8 @@ public class ClientService {
 
             clientSDto.setClientResponseDto(clientResponseDto);
             clientSDto.setCreated(true);
+
+            logger.info("Создан новый клиент: {}", clientRes);
         }
         return clientSDto;
     }
@@ -53,7 +69,9 @@ public class ClientService {
                 clientRepository.findByNameAndBirthDate(fullName, birthDate);
 
         if (clientOptional.isPresent()) {
-            return clientOptional.get();
+            Client existingClient = clientOptional.get();
+            logger.warn("Клиент уже существует: {}", existingClient);
+            return existingClient;
         }
 
         Client client = new Client();
@@ -61,7 +79,9 @@ public class ClientService {
         client.setBirthDate(birthDate);
         client.setEmail(email);
 
-        return clientRepository.save(client);
+        Client savedClient = clientRepository.save(client);
+        logger.info("Создан новый клиент: {}", savedClient);
+        return savedClient;
     }
 
     public Optional<Client> getClientById(Long id) {

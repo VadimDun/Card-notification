@@ -4,6 +4,8 @@ import com.example.cardNotification.models.Card;
 import com.example.cardNotification.notifiers.CardNotifier;
 import com.example.cardNotification.notifiers.FileCardNotifier;
 import com.example.cardNotification.services.CardService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +17,8 @@ public class CardScheduler {
     private final CardService cardService;
     private final CardNotifier cardNotifier;
 
+    private static final Logger logger = LoggerFactory.getLogger(CardScheduler.class);
+
     public CardScheduler(CardService cardService, CardNotifier cardNotifier) {
         this.cardService = cardService;
         this.cardNotifier = cardNotifier;
@@ -24,6 +28,7 @@ public class CardScheduler {
 //    @Scheduled(cron = "${cron.time}")
     // todo проверка на отправку через 1/2 недели(?)
     public void checkExpiringCardsForNotification() {
+        logger.info("Уведомление клиентов начато");
         checkExpired();
         checkWeekBeforeExpired();
         check2WeekBeforeExpired();
@@ -47,8 +52,7 @@ public class CardScheduler {
                     card.getClient().getEmail(),
                     "Срок действия вашей карты истек. Мы открыли новую карту",
                     message);
-            card.setNotified(true);
-            cardService.saveCard(card);
+            cardService.setNotified(card);
         }
     }
 
