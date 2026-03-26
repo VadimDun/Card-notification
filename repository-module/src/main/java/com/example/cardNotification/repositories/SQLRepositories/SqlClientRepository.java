@@ -42,4 +42,14 @@ public class SqlClientRepository implements ClientRepository {
     public List<Client> findByFullNameContaining(String namePart){
         return jpaClientRepository.findByFullNameContaining(namePart);
     }
+
+    @Override
+    public boolean existsById(Long id){
+        return jpaClientRepository.existsById(id);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        jpaClientRepository.deleteById(id);
+    }
 }

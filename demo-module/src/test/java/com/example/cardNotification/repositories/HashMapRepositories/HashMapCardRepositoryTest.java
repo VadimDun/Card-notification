@@ -2,7 +2,6 @@ package com.example.cardNotification.repositories.HashMapRepositories;
 
 import com.example.cardNotification.models.Card;
 import com.example.cardNotification.models.Client;
-import com.example.cardNotification.repositories.HashMapRepositories.HashMapCardRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -191,18 +190,18 @@ class HashMapCardRepositoryTest {
     }
 
     @Test
-    void delete_ShouldRemoveCard() {
+    void delete_ById_ShouldRemoveCard() {
         Long cardId = activeCard.getId();
 
-        cardRepository.delete(cardId);
+        cardRepository.deleteById(cardId);
 
         assertThat(cardRepository.findById(cardId)).isEmpty();
         assertThat(cardRepository.findAll()).hasSize(2);
     }
 
     @Test
-    void delete_ShouldDoNothing_WhenIdDoesNotExist() {
-        cardRepository.delete(999L);
+    void delete_ById_ShouldDoNothing_WhenIdDoesNotExist() {
+        cardRepository.deleteById(999L);
 
         assertThat(cardRepository.findAll()).hasSize(3);
     }

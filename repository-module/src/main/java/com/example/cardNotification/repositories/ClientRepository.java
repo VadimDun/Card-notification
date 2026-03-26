@@ -13,4 +13,6 @@ public interface ClientRepository {
     Optional<Client> findByNameAndBirthDate(String fullName, LocalDate birthDate);
     List<Client> findAll();
     List<Client> findByFullNameContaining(String namePart);
+    boolean existsById(Long id);
+    void deleteById(Long id);
 }

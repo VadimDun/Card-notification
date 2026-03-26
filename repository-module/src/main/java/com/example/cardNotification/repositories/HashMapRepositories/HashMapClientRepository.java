@@ -21,7 +21,7 @@ public class HashMapClientRepository implements ClientRepository {
     @PostConstruct
     private void init() {
         Client client = new Client( 1L, "Вадим",
-                LocalDate.of(2004, 7, 3), "example@gmail.com");
+                LocalDate.of(2004, 7, 3), "example@gmail.com", List.of());
         client.setId(idGen.incrementAndGet());
         clients.put(client.getId(), client);
     }
@@ -57,5 +57,15 @@ public class HashMapClientRepository implements ClientRepository {
     @Override
     public List<Client> findByFullNameContaining(String namePart){
         return new ArrayList<>(clients.values().stream().filter(client -> client.getFullName().contains(namePart)).toList());
+    }
+
+    @Override
+    public boolean existsById(Long id){
+        return clients.containsKey(id);
+    }
+
+    @Override
+    public void deleteById(Long id){
+        clients.remove(id);
     }
 }

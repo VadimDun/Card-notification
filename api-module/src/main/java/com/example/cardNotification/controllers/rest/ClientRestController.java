@@ -5,6 +5,8 @@ import com.example.cardNotification.dto.client.ClientResponseDto;
 import com.example.cardNotification.dto.client.ClientServiceDto;
 import com.example.cardNotification.mappers.ClientMapper;
 import com.example.cardNotification.services.ClientService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Клиенты", description = "Действия с клиентами")
 @RestController
 @RequestMapping("/rest/clients")
 public class ClientRestController {
@@ -22,23 +25,37 @@ public class ClientRestController {
     }
 
     @GetMapping
+    @Operation(summary = "Получить всех клиентов")
     public List<ClientResponseDto> getAllClients() {
-        return clientService.getAllClients()
-                .stream().map(ClientMapper::MapToResponse).toList();
+        return clientService.getAllClients();
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Найти клиента по id")
     public ResponseEntity<ClientResponseDto> getClientById(@PathVariable @Positive long id) {
-        return clientService.getClientById(id)
-                .map(client -> ResponseEntity.ok(ClientMapper.MapToResponse(client)))
-                .orElse(ResponseEntity.notFound().build());
+        ClientServiceDto response = clientService.getClientById(id);
+        if (response.isExecuted()) {
+            return ResponseEntity.status(200).body(response.getClientResponseDto());
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping
+    @Operation(summary = "Добавить клиента")
     public ResponseEntity<ClientResponseDto> createClient(@Valid @RequestBody ClientRequestDto clientDto) {
         ClientServiceDto response = clientService.createClient(clientDto);
-        if (response.isCreated())
+        if (response.isExecuted())
             return ResponseEntity.status(201).body(response.getClientResponseDto());
         return ResponseEntity.status(200).body(response.getClientResponseDto());
     }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Удалить клиента")
+    public ResponseEntity<Void> deleteClient(@PathVariable @Positive long id) {
+        if (clientService.deleteById(id)) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 }

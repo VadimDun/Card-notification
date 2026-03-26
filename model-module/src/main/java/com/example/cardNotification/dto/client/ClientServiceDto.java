@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class ClientServiceDto {
     private ClientResponseDto clientResponseDto;
-    private boolean created;
+    private boolean executed;
 }

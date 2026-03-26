@@ -59,7 +59,12 @@ public class SqlCardRepository implements CardRepository {
     }
 
     @Override
-    public void delete(long id){
+    public boolean existsById(Long id){
+        return jpacardRepository.existsById(id);
+    }
+
+    @Override
+    public void deleteById(long id){
         jpacardRepository.deleteById(id);
     }
 }

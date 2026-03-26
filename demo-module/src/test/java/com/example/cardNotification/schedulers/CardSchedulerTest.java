@@ -101,7 +101,7 @@ class CardSchedulerTest {
                 subjectCaptor.capture(),
                 messageCaptor.capture()
         );
-        verify(cardService).saveCard(cardCaptor.capture());
+        verify(cardService).setNotified(expiredCard);
 
         assertThat(emailCaptor.getValue()).isEqualTo("example@gmail.com");
         assertThat(subjectCaptor.getValue()).isEqualTo("Срок действия вашей карты истек. Мы открыли новую карту");
@@ -112,9 +112,6 @@ class CardSchedulerTest {
         assertThat(message).contains("истек");
         assertThat(message).contains("4000123412341234");
         assertThat(message).contains(newCard.getExpDate().toString());
-
-        Card savedCard = cardCaptor.getValue();
-        assertThat(savedCard.isNotified()).isTrue();
     }
 
     @Test
@@ -198,7 +195,7 @@ class CardSchedulerTest {
                 anyString()
         );
         verify(cardService).reissueCard(expiredCard);
-        verify(cardService).saveCard(any(Card.class));
+        verify(cardService).setNotified(any(Card.class));
     }
 
     @Test

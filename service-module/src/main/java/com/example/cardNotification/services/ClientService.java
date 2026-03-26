@@ -46,7 +46,7 @@ public class ClientService {
             ClientResponseDto clientResponseDto = ClientMapper.MapToResponse(clientRes);
 
             clientSDto.setClientResponseDto(clientResponseDto);
-            clientSDto.setCreated(false);
+            clientSDto.setExecuted(false);
 
             logger.warn("Клиент уже существует: {}, возвращен старый клиент", clientRes);
         }
@@ -57,7 +57,7 @@ public class ClientService {
             ClientResponseDto clientResponseDto = ClientMapper.MapToResponse(clientRes);
 
             clientSDto.setClientResponseDto(clientResponseDto);
-            clientSDto.setCreated(true);
+            clientSDto.setExecuted(true);
 
             logger.info("Создан новый клиент: {}", clientRes);
         }
@@ -84,12 +84,29 @@ public class ClientService {
         return savedClient;
     }
 
-    public Optional<Client> getClientById(Long id) {
-        return clientRepository.findById(id);
+    public ClientServiceDto getClientById(Long id) {
+        Optional<Client> clientOptional = clientRepository.findById(id);
+        ClientServiceDto clientSDto = new ClientServiceDto();
+
+        if (clientOptional.isPresent()) {
+            Client clientRes = clientOptional.get();
+            ClientResponseDto clientResponseDto = ClientMapper.MapToResponse(clientRes);
+
+            clientSDto.setClientResponseDto(clientResponseDto);
+            clientSDto.setExecuted(true);
+
+            logger.info("Клиент найден по id {}: {}", id, clientRes);
+        } else {
+            clientSDto.setExecuted(false);
+
+            logger.warn("Клиент с id {} не найден", id);
+        }
+
+        return clientSDto;
     }
 
-    public List<Client> getAllClients() {
-        return clientRepository.findAll();
+    public List<ClientResponseDto> getAllClients() {
+        return clientRepository.findAll().stream().map(ClientMapper::MapToResponse).toList();
     }
 
     public Optional<Client> findByFullNameAndBirthDate(String fullName, LocalDate birthDate) {
@@ -98,5 +115,13 @@ public class ClientService {
 
     public List<Client> searchClients(String fullName) {
         return clientRepository.findByFullNameContaining(fullName);
+    }
+
+    public boolean deleteById(Long id){
+        if (clientRepository.existsById(id)) {
+            clientRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

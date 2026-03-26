@@ -21,6 +21,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -121,7 +123,7 @@ class CardServiceTest {
 
         CardServiceDto result = cardService.createCard(testCardRequestDto);
 
-        assertThat(result.isCreated()).isTrue();
+        assertThat(result.isExecuted()).isTrue();
         assertThat(result.getCardResponseDto()).isNotNull();
         assertThat(result.getCardResponseDto().getId()).isEqualTo(1L);
         assertThat(result.getCardResponseDto().getCardNumber()).isEqualTo("4200123456789012");
@@ -144,7 +146,7 @@ class CardServiceTest {
 
         CardServiceDto result = cardService.createCard(testCardRequestDto);
 
-        assertThat(result.isCreated()).isTrue();
+        assertThat(result.isExecuted()).isTrue();
         assertThat(result.getCardResponseDto()).isNotNull();
         assertThat(testCardRequestDto.getCardNumber()).isNotEqualTo("4200123456789012");
 
@@ -165,7 +167,7 @@ class CardServiceTest {
 
         CardServiceDto result = cardService.createCard(requestWithInvalidClient);
 
-        assertThat(result.isCreated()).isFalse();
+        assertThat(result.isExecuted()).isFalse();
         assertThat(result.getCardResponseDto()).isNull();
 
         verify(clientRepository).findById(999L);
@@ -328,4 +330,30 @@ class CardServiceTest {
         assertThat(cardNumber1).isNotEqualTo(cardNumber3);
         assertThat(cardNumber2).isNotEqualTo(cardNumber3);
     }
+
+    @Test
+    void deleteById_WithExistingId_ShouldReturnTrue() {
+        Long cardId = 1L;
+        when(cardRepository.existsById(cardId)).thenReturn(true);
+        doNothing().when(cardRepository).deleteById(cardId);
+
+        boolean result = cardService.deleteById(cardId);
+
+        assertTrue(result);
+        verify(cardRepository, times(1)).existsById(1L);
+        verify(cardRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void deleteById_WithNonExistentId_ShouldReturnFalse() {
+        Long cardId = 999L;
+        when(cardRepository.existsById(cardId)).thenReturn(false);
+
+        boolean result = cardService.deleteById(cardId);
+
+        assertFalse(result);
+        verify(cardRepository, times(1)).existsById(cardId);
+        verify(cardRepository, never()).deleteById(cardId);
+    }
+
 }

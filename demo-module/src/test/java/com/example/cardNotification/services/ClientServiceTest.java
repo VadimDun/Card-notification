@@ -16,6 +16,8 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -59,7 +61,7 @@ class ClientServiceTest {
 
         ClientServiceDto result = clientService.createClient(testClientRequestDto);
 
-        assertThat(result.isCreated()).isTrue();
+        assertThat(result.isExecuted()).isTrue();
         assertThat(result.getClientResponseDto()).isNotNull();
         assertThat(result.getClientResponseDto().getId()).isEqualTo(1L);
         assertThat(result.getClientResponseDto().getFullName()).isEqualTo("Петров Иван Иванович");
@@ -82,7 +84,7 @@ class ClientServiceTest {
 
         ClientServiceDto result = clientService.createClient(testClientRequestDto);
 
-        assertThat(result.isCreated()).isFalse();
+        assertThat(result.isExecuted()).isFalse();
         assertThat(result.getClientResponseDto()).isNotNull();
         assertThat(result.getClientResponseDto().getId()).isEqualTo(1L);
         assertThat(result.getClientResponseDto().getFullName()).isEqualTo("Петров Иван Иванович");
@@ -124,7 +126,7 @@ class ClientServiceTest {
         assertThat(capturedClient.getBirthDate()).isEqualTo(LocalDate.of(2005, 11, 24));
         assertThat(capturedClient.getEmail()).isEqualTo("evgeny@example.com");
 
-        assertThat(result.isCreated()).isTrue();
+        assertThat(result.isExecuted()).isTrue();
         assertThat(result.getClientResponseDto().getId()).isEqualTo(2L);
         assertThat(result.getClientResponseDto().getFullName()).isEqualTo("Андреев Евгений Александрович");
     }
@@ -167,4 +169,28 @@ class ClientServiceTest {
         verify(clientRepository).save(any(Client.class));
     }
 
+    @Test
+    void deleteById_WithExistingId_ShouldReturnTrue() {
+        Long clientId = 1L;
+        when(clientRepository.existsById(clientId)).thenReturn(true);
+        doNothing().when(clientRepository).deleteById(clientId);
+
+        boolean result = clientService.deleteById(clientId);
+
+        assertTrue(result);
+        verify(clientRepository, times(1)).existsById(clientId);
+        verify(clientRepository, times(1)).deleteById(clientId);
+    }
+
+    @Test
+    void deleteById_WithNonExistentId_ShouldReturnFalse() {
+        Long clientId = 999L;
+        when(clientRepository.existsById(clientId)).thenReturn(false);
+
+        boolean result = clientService.deleteById(clientId);
+
+        assertFalse(result);
+        verify(clientRepository, times(1)).existsById(clientId);
+        verify(clientRepository, never()).deleteById(clientId);
+    }
 }

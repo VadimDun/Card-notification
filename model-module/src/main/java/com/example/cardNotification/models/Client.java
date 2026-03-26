@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "clients")
@@ -21,6 +23,9 @@ public class Client {
     private String fullName;
     private LocalDate birthDate;
     private String email;
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Card> cards = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

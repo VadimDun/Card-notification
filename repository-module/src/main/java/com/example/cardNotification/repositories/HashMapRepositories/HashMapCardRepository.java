@@ -74,7 +74,12 @@ public class HashMapCardRepository implements CardRepository {
     }
 
     @Override
-    public void delete(long id){
+    public boolean existsById(Long id){
+        return cards.containsKey(id);
+    }
+
+    @Override
+    public void deleteById(long id){
         cards.remove(id);
     }
 }

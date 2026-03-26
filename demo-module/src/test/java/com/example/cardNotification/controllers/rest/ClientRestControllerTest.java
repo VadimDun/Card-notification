@@ -1,6 +1,5 @@
 package com.example.cardNotification.controllers.rest;
 
-import com.example.cardNotification.controllers.rest.ClientRestController;
 import com.example.cardNotification.dto.client.ClientRequestDto;
 import com.example.cardNotification.dto.client.ClientResponseDto;
 import com.example.cardNotification.dto.client.ClientServiceDto;
@@ -23,7 +22,7 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -65,8 +64,8 @@ class ClientRestControllerTest {
     }
 
     @Test
-    void getAllClients_ShouldReturnListOfClients() throws Exception {
-        List<Client> clients = Collections.singletonList(testClient);
+    void getAllClients_ShouldReturnListOfClientsSingle() throws Exception {
+        List<ClientResponseDto> clients = Collections.singletonList(ClientMapper.MapToResponse(testClient));
         when(clientService.getAllClients()).thenReturn(clients);
 
         mockMvc.perform(get("/rest/clients"))
@@ -76,6 +75,32 @@ class ClientRestControllerTest {
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].fullName", is("Иван Иванов")))
                 .andExpect(jsonPath("$[0].email", is("example@gmail.com")));
+    }
+
+    @Test
+    void getAllClients_ShouldReturnListOfClients() throws Exception {
+        Client client2 = new Client();
+        client2.setId(2L);
+        client2.setFullName("Петр Петров");
+        client2.setEmail("petr@example.com");
+        client2.setBirthDate(LocalDate.of(1990, 1, 1));
+
+        List<ClientResponseDto> clients = List.of(
+                ClientMapper.MapToResponse(testClient),
+                ClientMapper.MapToResponse(client2)
+        );
+        when(clientService.getAllClients()).thenReturn(clients);
+
+        mockMvc.perform(get("/rest/clients"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$[0].fullName", is("Иван Иванов")))
+                .andExpect(jsonPath("$[0].email", is("example@gmail.com")))
+                .andExpect(jsonPath("$[1].id", is(2)))
+                .andExpect(jsonPath("$[1].fullName", is("Петр Петров")))
+                .andExpect(jsonPath("$[1].email", is("petr@example.com")));
     }
 
     @Test
@@ -90,7 +115,12 @@ class ClientRestControllerTest {
 
     @Test
     void getClientById_WithExistingId_ShouldReturnClient() throws Exception {
-        when(clientService.getClientById(1L)).thenReturn(Optional.of(testClient));
+        ClientServiceDto clientServiceDto = new ClientServiceDto();
+        ClientResponseDto clientResponseDto = ClientMapper.MapToResponse(testClient);
+        clientServiceDto.setClientResponseDto(clientResponseDto);
+        clientServiceDto.setExecuted(true);
+
+        when(clientService.getClientById(1L)).thenReturn(clientServiceDto);
 
         mockMvc.perform(get("/rest/clients/1"))
                 .andExpect(status().isOk())
@@ -102,7 +132,11 @@ class ClientRestControllerTest {
 
     @Test
     void getClientById_WithNonExistentId_ShouldReturnNotFound() throws Exception {
-        when(clientService.getClientById(999L)).thenReturn(Optional.empty());
+        ClientServiceDto clientServiceDto = new ClientServiceDto();
+        clientServiceDto.setClientResponseDto(null);
+        clientServiceDto.setExecuted(false);
+
+        when(clientService.getClientById(999L)).thenReturn(clientServiceDto);
 
         mockMvc.perform(get("/rest/clients/999"))
                 .andExpect(status().isNotFound());
@@ -116,7 +150,7 @@ class ClientRestControllerTest {
 
     @Test
     void createClient_WithNewClient_ShouldReturnCreated() throws Exception {
-        testClientServiceDto.setCreated(true);
+        testClientServiceDto.setExecuted(true);
         when(clientService.createClient(any(ClientRequestDto.class))).thenReturn(testClientServiceDto);
 
         mockMvc.perform(post("/rest/clients")
@@ -130,7 +164,7 @@ class ClientRestControllerTest {
 
     @Test
     void createClient_WithExistingClient_ShouldReturnOk() throws Exception {
-        testClientServiceDto.setCreated(false);
+        testClientServiceDto.setExecuted(false);
         when(clientService.createClient(any(ClientRequestDto.class))).thenReturn(testClientServiceDto);
 
         mockMvc.perform(post("/rest/clients")
@@ -209,5 +243,25 @@ class ClientRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidClient)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void deleteClient_WithExistingId_ShouldReturnNoContent() throws Exception {
+        when(clientService.deleteById(1L)).thenReturn(true);
+
+        mockMvc.perform(delete("/rest/clients/1"))
+                .andExpect(status().isNoContent());
+
+        verify(clientService, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void deleteClient_WithNonExistentId_ShouldReturnNotFound() throws Exception {
+        when(clientService.deleteById(999L)).thenReturn(false);
+
+        mockMvc.perform(delete("/rest/clients/999"))
+                .andExpect(status().isNotFound());
+
+        verify(clientService, times(1)).deleteById(999L);
     }
 }

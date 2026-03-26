@@ -61,11 +61,11 @@ public class CardService {
             Card createdCard = cardRepository.save(card);
             CardResponseDto cardResponseDto = CardMapper.MapToResponse(createdCard);
             cardServiceDto.setCardResponseDto(cardResponseDto);
-            cardServiceDto.setCreated(true);
+            cardServiceDto.setExecuted(true);
             logger.info("Создана карта {}",createdCard);
         }
         else {
-            cardServiceDto.setCreated(false);
+            cardServiceDto.setExecuted(false);
             logger.warn("Карта для клиента с id:{} не создана - клиент не найден", cardRequestDto.getCardNumber());
         }
 
@@ -89,6 +89,28 @@ public class CardService {
         card.setClient(client);
 
         return cardRepository.save(card);
+    }
+
+    public CardServiceDto getCardById(Long id) {
+        Optional<Card> cardOptional = cardRepository.findById(id);
+        CardServiceDto cardServiceDto = new CardServiceDto();
+
+        if (cardOptional.isPresent()) {
+            Card card = cardOptional.get();
+            CardResponseDto cardResponseDto = CardMapper.MapToResponse(card);
+
+            cardServiceDto.setCardResponseDto(cardResponseDto);
+            cardServiceDto.setExecuted(true);
+
+            logger.info("Карта найдена по id {}: {}", id, card);
+        } else {
+            cardServiceDto.setCardResponseDto(null);
+            cardServiceDto.setExecuted(false);
+
+            logger.warn("Карта с id {} не найдена", id);
+        }
+
+        return cardServiceDto;
     }
 
     public void setNotified(Card card) {
@@ -145,8 +167,8 @@ public class CardService {
         return cardRepository.findExpiredAndNotNotifiedCards();
     }
 
-    public List<Card> getAllCards() {
-        return cardRepository.findAll();
+    public List<CardResponseDto> getAllCards() {
+        return cardRepository.findAll().stream().map(CardMapper::MapToResponse).toList();
     }
 
     public Optional<Card> findByCardNumber(String number) {
@@ -168,7 +190,11 @@ public class CardService {
         return cardNumber.toString();
     }
 
-    public void deleteById(long id) {
-        cardRepository.delete(id);
+    public boolean deleteById(long id) {
+        if (cardRepository.existsById(id)) {
+            cardRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

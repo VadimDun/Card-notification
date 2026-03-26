@@ -17,5 +17,6 @@ public interface CardRepository {
     List<Card> findExpiredAndNotNotifiedCards();
     List<Card> findAll();
     List<Card> findByCardNumberContaining(String numberPart);
-    void delete(long id);
+    boolean existsById(Long id);
+    void deleteById(long id);
 }

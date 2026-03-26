@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class CardServiceDto {
     private CardResponseDto cardResponseDto;
-    private boolean created;
+    private boolean executed;
     private boolean numberChanged;
 }

@@ -1,6 +1,5 @@
 package com.example.cardNotification.controllers.rest;
 
-import com.example.cardNotification.controllers.rest.CardRestController;
 import com.example.cardNotification.dto.card.CardRequestDto;
 import com.example.cardNotification.dto.card.CardResponseDto;
 import com.example.cardNotification.dto.card.CardServiceDto;
@@ -23,7 +22,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -76,7 +75,7 @@ class CardRestControllerTest {
 
     @Test
     void getAllCards_ShouldReturnListOfCards() throws Exception {
-        List<Card> cards = Collections.singletonList(testCard);
+        List<CardResponseDto> cards = Collections.singletonList(CardMapper.MapToResponse(testCard));
         when(cardService.getAllCards()).thenReturn(cards);
 
         mockMvc.perform(get("/rest/cards"))
@@ -102,7 +101,7 @@ class CardRestControllerTest {
 
     @Test
     void createCard_WithValidData_ShouldReturnCreated() throws Exception {
-        testCardServiceDto.setCreated(true);
+        testCardServiceDto.setExecuted(true);
         when(cardService.createCard(any(CardRequestDto.class))).thenReturn(testCardServiceDto);
 
         mockMvc.perform(post("/rest/cards")
@@ -117,7 +116,7 @@ class CardRestControllerTest {
 
     @Test
     void createCard_WithNonExistentClient_ShouldReturnNotFound() throws Exception {
-        testCardServiceDto.setCreated(false);
+        testCardServiceDto.setExecuted(false);
         when(cardService.createCard(any(CardRequestDto.class))).thenReturn(testCardServiceDto);
 
         mockMvc.perform(post("/rest/cards")
@@ -185,5 +184,25 @@ class CardRestControllerTest {
 
         mockMvc.perform(post("/rest/cards/close/1"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteCard_WithExistingId_ShouldReturnNoContent() throws Exception {
+        when(cardService.deleteById(1L)).thenReturn(true);
+
+        mockMvc.perform(delete("/rest/cards/1"))
+                .andExpect(status().isNoContent());
+
+        verify(cardService, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void deleteCard_WithNonExistentId_ShouldReturnNotFound() throws Exception {
+        when(cardService.deleteById(999L)).thenReturn(false);
+
+        mockMvc.perform(delete("/rest/cards/999"))
+                .andExpect(status().isNotFound());
+
+        verify(cardService, times(1)).deleteById(999L);
     }
 }
