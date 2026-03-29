@@ -1,4 +1,4 @@
-export default function CardList({ cards, onClose, onDelete }) {
+export default function CardList({ cards, onClose, onDelete, onSort }) {
 
     function handleDelete(id) {
 
@@ -43,12 +43,25 @@ export default function CardList({ cards, onClose, onDelete }) {
 
             <thead>
             <tr>
-                <th>ID</th>
-                <th>Номер</th>
-                <th>Дата выдачи</th>
-                <th>Дата окончания</th>
-                <th>Клиент</th>
-                <th>Статус</th>
+                <th onClick={() => onSort("id")}>
+                    ID
+                </th>
+                <th onClick={() => onSort("cardNumber")}>
+                    Номер
+                </th>
+                <th onClick={() => onSort("issueDate")}>
+                    Дата выдачи
+                </th>
+                <th onClick={() => onSort("expDate")}>
+                    Дата окончания
+                </th>
+
+                <th onClick={() => onSort("clientName")}>
+                    Клиент
+                </th>
+                <th onClick={() => onSort("active")}>
+                    Статус
+                </th>
                 <th>Действия</th>
             </tr>
             </thead>

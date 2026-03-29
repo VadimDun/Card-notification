@@ -171,6 +171,18 @@ public class CardService {
         return cardRepository.findAll().stream().map(CardMapper::MapToResponse).toList();
     }
 
+    public List<CardResponseDto> getCards(Long clientId) {
+        List<Card> cards;
+
+        if (clientId != null) {
+            cards = cardRepository.findByClientId(clientId);
+        } else {
+            cards = cardRepository.findAll();
+        }
+
+        return cards.stream().map(CardMapper::MapToResponse).toList();
+    }
+
     public Optional<Card> findByCardNumber(String number) {
         return cardRepository.findByCardNumber(number);
     }

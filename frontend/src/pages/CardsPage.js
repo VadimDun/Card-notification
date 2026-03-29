@@ -8,14 +8,27 @@ export default function CardsPage() {
     const [cards, setCards] = useState([]);
     const [clients, setClients] = useState([]);
 
+    const [selectedClientId, setSelectedClientId] = useState("");
+
+    const [sortField, setSortField] = useState("id");
+    const [sortDirection, setSortDirection] = useState("asc");
+
+    const processedCards = sortCards(cards);
+
     useEffect(() => {
-        loadCards();
+        loadCards(selectedClientId);
         loadClients();
-    }, []);
+    }, [selectedClientId]);
 
-    async function loadCards() {
+    async function loadCards(clientId = "") {
 
-        fetch("http://localhost:8080/rest/cards")
+        let url = "http://localhost:8080/rest/cards";
+
+        if (clientId) {
+            url += `?clientId=${clientId}`;
+        }
+
+        fetch(url)
             .then(response => response.json())
             .then(data => setCards(data));
 
@@ -59,15 +72,74 @@ export default function CardsPage() {
             });
     }
 
+    function sortCards(cards) {
+
+        return [...cards].sort((a, b) => {
+
+            let valueA = a[sortField];
+            let valueB = b[sortField];
+
+            if (sortField.includes("Date")) {
+                valueA = new Date(valueA);
+                valueB = new Date(valueB);
+            }
+
+            if (valueA < valueB)
+                return sortDirection === "asc" ? -1 : 1;
+
+            if (valueA > valueB)
+                return sortDirection === "asc" ? 1 : -1;
+
+            return 0;
+
+        });
+
+    }
+
+    function handleSort(field) {
+
+        if (field === sortField) {
+            setSortDirection(
+                sortDirection === "asc" ? "desc" : "asc"
+            );
+
+        } else {
+            setSortField(field);
+            setSortDirection("asc");
+
+        }
+
+    }
+
     return (
 
         <div>
 
             <h1>Карты</h1>
 
-            <CardForm onCreate={createCard} clients={clients} />
+            <CardForm onCreate={createCard} clients={clients}/>
 
-            <CardList cards={cards} onClose={closeCard} onDelete={deleteCard}/>
+            <select value={selectedClientId}
+                onChange={e =>
+                    setSelectedClientId(e.target.value)
+                }
+            >
+
+                <option value="">
+                    Все клиенты
+                </option>
+
+                {clients.map(client => (
+
+                    <option key={client.id} value={client.id}>
+                        {client.fullName}
+                    </option>
+
+                ))}
+
+            </select>
+
+            <CardList cards={processedCards} onClose={closeCard} onDelete={deleteCard} onSort={handleSort}/>
 
         </div>
 

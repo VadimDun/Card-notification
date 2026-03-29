@@ -59,6 +59,11 @@ public class SqlCardRepository implements CardRepository {
     }
 
     @Override
+    public List<Card> findByClientId(Long clientId) {
+        return jpacardRepository.findByClientId(clientId);
+    }
+
+    @Override
     public boolean existsById(Long id){
         return jpacardRepository.existsById(id);
     }

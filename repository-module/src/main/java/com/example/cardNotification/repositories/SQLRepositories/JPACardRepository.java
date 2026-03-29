@@ -17,5 +17,6 @@ public interface JPACardRepository extends JpaRepository<Card, Long> {
     List<Card> findByCardNumberContaining(String cardNumber);
     List<Card> findByExpDateLessThanEqual(LocalDate expDate);
     List<Card> findByExpDateLessThanEqualAndNotifiedFalse(LocalDate expDate);
+    List<Card> findByClientId(Long clientId);
 }
 
