@@ -59,6 +59,20 @@ export default function CardsPage() {
             });
     }
 
+    async function issueCard(clientId) {
+
+        await fetch(
+            `http://localhost:8080/rest/cards/issue/${clientId}`,
+            {
+                method: "POST"
+            }
+        )
+            .then(() => {
+                loadCards();
+            });
+
+    }
+
     async function closeCard(id) {
         await fetch(`http://localhost:8080/rest/cards/close/${id}`, {
             method: "POST"
@@ -144,6 +158,16 @@ export default function CardsPage() {
                 ))}
 
             </select>
+
+            <button disabled={!selectedClientId}
+                onClick={() =>
+                    issueCard(selectedClientId)
+                }
+            >
+                Выпустить карту выбранному клиенту
+            </button>
+
+            <br/>
 
             <input
                 placeholder="Поиск по номеру карты"

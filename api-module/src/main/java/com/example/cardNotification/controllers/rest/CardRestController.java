@@ -50,6 +50,12 @@ public class CardRestController {
         else return ResponseEntity.status(404).body("Клиента с id: " + cardDto.getClientId().toString() + " не существует");
     }
 
+    @PostMapping("/issue/{clientId}")
+    public CardResponseDto issueCard(@PathVariable Long clientId
+    ) {
+        return cardService.issueCard(clientId);
+    }
+
     @PostMapping("/close/{id}")
     @Operation(summary = "Закрыть карту")
     public ResponseEntity<Void> closeCard(@PathVariable @Positive long id) {

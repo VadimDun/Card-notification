@@ -143,6 +143,35 @@ public class CardService {
         return true;
     }
 
+    public CardResponseDto issueCard(Long clientId) {
+
+        Client client = clientRepository.findById(clientId)
+                .orElseThrow(() -> new RuntimeException("Клиент не найден"));
+
+        Card card = new Card();
+
+        String newCardNumber = generateCardNumber();
+        while (cardRepository.findByCardNumber(newCardNumber).isPresent()) {
+            newCardNumber = generateCardNumber();
+        }
+        card.setCardNumber(newCardNumber);
+
+        LocalDate now = LocalDate.now();
+
+        card.setIssueDate(now);
+
+        card.setExpDate(now.plusYears(4));
+
+        card.setActive(true);
+
+        card.setClient(client);
+
+        Card savedCard = cardRepository.save(card);
+
+        return CardMapper.MapToResponse(savedCard);
+
+    }
+
     public Card reissueCard(Card oldCard) {
         oldCard.setActive(false);
         cardRepository.save(oldCard);
