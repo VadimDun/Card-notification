@@ -54,6 +54,7 @@ export default function CardsPage() {
             method: "DELETE"
         })
             .then(() => {
+                alert("Карта создана");
                 loadCards();
             });
     }

@@ -1,36 +1,99 @@
 export default function CardList({ cards, onClose, onDelete }) {
 
+    function handleDelete(id) {
+
+        if (window.confirm("Удалить карту?")) {
+            onDelete(id);
+        }
+
+    }
+
+    function handleClose(id) {
+
+        if (window.confirm("Закрыть карту?")) {
+            onClose(id);
+        }
+
+    }
+
+    function formatDate(date) {
+
+        return new Date(date)
+            .toLocaleDateString();
+
+    }
+
+    function getStatus(active) {
+
+        return active ? "Открыта" : "Закрыта";
+
+    }
+
+    function getStatusClass(active) {
+
+        return active
+            ? "status-open"
+            : "status-closed";
+
+    }
+
     return (
 
-        <ul>
+        <table>
+
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Номер</th>
+                <th>Дата выдачи</th>
+                <th>Дата окончания</th>
+                <th>Клиент</th>
+                <th>Статус</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+
+            <tbody>
 
             {cards.map(card => (
 
-                <li key={card.id}>
+                <tr key={card.id}>
 
-                    ID: {card.id}
-                    {" | "}
-                    Номер: {card.cardNumber}
-                    {", "}
-                    Выпущена: {card.issueDate}
-                    {", "}
-                    Срок действия: {card.expDate}
-                    {" "}
-                    (ID клиента: {card.clientId})
+                    <td>{card.id}</td>
 
-                    <button onClick={() => onClose(card.id)}>
-                        Закрыть
-                    </button>
+                    <td>{card.cardNumber}</td>
 
-                    <button onClick={() => onDelete(card.id)}>
-                        Удалить
-                    </button>
+                    <td>{formatDate(card.issueDate)}</td>
 
-                </li>
+                    <td>{formatDate(card.expDate)}</td>
+
+                    <td>{card.clientName}</td>
+
+                    <td className={getStatusClass(card.active)}>
+                        {getStatus(card.active)}
+                    </td>
+
+                    <td>
+
+                        {card.active && (
+                            <button onClick={() => handleClose(card.id)}>
+                                Закрыть
+                            </button>
+                        )}
+
+                        <button onClick={() => handleDelete(card.id)}>
+                            Удалить
+                        </button>
+
+                    </td>
+
+                </tr>
 
             ))}
 
-        </ul>
+            </tbody>
+
+        </table>
 
     );
 

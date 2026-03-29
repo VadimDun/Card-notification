@@ -28,6 +28,7 @@ export default function ClientsPage() {
             body: JSON.stringify(client)
         })
             .then(() => {
+                alert("Клиент создан");
                 loadClients();
             });
     }

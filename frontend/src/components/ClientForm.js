@@ -32,18 +32,21 @@ export default function ClientForm({ onCreate }) {
                 placeholder="Полное имя клиента"
                 value={fullName}
                 onChange={e => setFullName(e.target.value)}
+                required
             />
 
             <input
                 type="date"
                 value={birthDate}
                 onChange={e => setBirthDate(e.target.value)}
+                required
             />
 
             <input
                 placeholder="Email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
+                required
             />
 
             <button type="submit">

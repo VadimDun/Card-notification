@@ -7,13 +7,13 @@ export default function Navbar() {
         <nav>
 
             <Link to="/clients">
-                Clients
+                Клиенты
             </Link>
 
             {" | "}
 
             <Link to="/cards">
-                Cards
+                Карты
             </Link>
 
         </nav>

@@ -1,19 +1,55 @@
 export default function ClientList({ clients, onDelete }) {
 
+    function handleDelete(id) {
+
+        const confirmed = window.confirm(
+            "Удалить клиента?"
+        );
+
+        if (confirmed) {
+            onDelete(id);
+        }
+
+    }
+
     return (
 
-        <ul>
+        <table>
+
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Email</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
             {clients.map(client => (
-                <li key={client.id}>
-                    ID: {client.id}
-                    {" | "}
-                    {client.fullName}({client.birthDate}): {client.email}
-                    <button onClick={() => onDelete(client.id)}>
-                        Удалить
-                    </button>
-                </li>
+
+                <tr key={client.id}>
+
+                    <td>{client.id}</td>
+                    <td>{client.fullName}</td>
+                    <td>{client.email}</td>
+
+                    <td>
+
+                        <button onClick={() => handleDelete(client.id)}>
+                            Удалить
+                        </button>
+
+                    </td>
+
+                </tr>
+
             ))}
-        </ul>
+
+            </tbody>
+
+        </table>
 
     );
 }

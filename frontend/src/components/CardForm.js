@@ -11,6 +11,15 @@ export default function CardForm({ onCreate, clients }) {
 
         e.preventDefault();
 
+        if (expDate <= issueDate) {
+
+            alert(
+                "Дата окончания должна быть позже даты выдачи"
+            );
+
+            return;
+        }
+
         const card = {
             cardNumber,
             issueDate,
@@ -35,20 +44,22 @@ export default function CardForm({ onCreate, clients }) {
                 placeholder="Номер карты (16 цифр)"
                 value={cardNumber}
                 onChange={e => setCardNumber(e.target.value)}
-                minLength="16"
-                maxLength="16"
+                pattern="\d{16}"
+                required
             />
 
             <input
                 type="date"
                 value={issueDate}
                 onChange={e => setIssueDate(e.target.value)}
+                required
             />
 
             <input
                 type="date"
                 value={expDate}
                 onChange={e => setExpDate(e.target.value)}
+                required
             />
 
             <select value={clientId} onChange={e => setClientId(e.target.value)} required>
