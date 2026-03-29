@@ -12,7 +12,7 @@ public interface ClientRepository {
     Optional<Client> findById(Long id);
     Optional<Client> findByNameAndBirthDate(String fullName, LocalDate birthDate);
     List<Client> findAll();
-    List<Client> findByFullNameContaining(String namePart);
+    List<Client> findByFullNameContainingIgnoreCase(String namePart);
     boolean existsById(Long id);
     void deleteById(Long id);
 }

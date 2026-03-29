@@ -1,7 +1,6 @@
 package com.example.cardNotification.repositories.SQLRepositories;
 
 import com.example.cardNotification.models.Client;
-import com.example.cardNotification.repositories.SQLRepositories.JPAClientRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,8 +67,8 @@ class JPAClientRepositoryTest {
     }
 
     @Test
-    void findByFullNameContaining_ShouldReturnMatchingClients() {
-        List<Client> clients = clientRepository.findByFullNameContaining("Иван");
+    void findByFullNameContaining_IgnoreCase_IgnoreCase_ShouldReturnMatchingClients() {
+        List<Client> clients = clientRepository.findByFullNameContainingIgnoreCase("Иван");
 
         assertThat(clients).hasSize(2);
         assertThat(clients).extracting(Client::getFullName)
@@ -77,16 +76,16 @@ class JPAClientRepositoryTest {
     }
 
     @Test
-    void findByFullNameContaining_ShouldReturnSingleMatch() {
-        List<Client> clients = clientRepository.findByFullNameContaining("Евгений");
+    void findByFullNameContaining_IgnoreCase_IgnoreCase_ShouldReturnSingleMatch() {
+        List<Client> clients = clientRepository.findByFullNameContainingIgnoreCase("Евгений");
 
         assertThat(clients).hasSize(1);
         assertThat(clients.get(0).getFullName()).isEqualTo("Андреев Евгений Александрович");
     }
 
     @Test
-    void findByFullNameContaining_ShouldReturnEmptyList_WhenNoMatches() {
-        List<Client> clients = clientRepository.findByFullNameContaining("Ксения");
+    void findByFullNameContaining_IgnoreCase_IgnoreCase_ShouldReturnEmptyList_WhenNoMatches() {
+        List<Client> clients = clientRepository.findByFullNameContainingIgnoreCase("Ксения");
 
         assertThat(clients).isEmpty();
     }

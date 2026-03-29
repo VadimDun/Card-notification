@@ -114,7 +114,18 @@ public class ClientService {
     }
 
     public List<Client> searchClients(String fullName) {
-        return clientRepository.findByFullNameContaining(fullName);
+        return clientRepository.findByFullNameContainingIgnoreCase(fullName);
+    }
+
+    public List<ClientResponseDto> getClients(String name) {
+        List<Client> clients;
+        if (name != null && !name.isEmpty()) {
+            clients = clientRepository.findByFullNameContainingIgnoreCase(name);
+        } else {
+            clients = clientRepository.findAll();
+        }
+
+        return clients.stream().map(ClientMapper::MapToResponse).toList();
     }
 
     public boolean deleteById(Long id){

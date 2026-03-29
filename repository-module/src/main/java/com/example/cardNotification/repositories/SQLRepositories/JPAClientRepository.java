@@ -11,5 +11,5 @@ import java.util.Optional;
 @Repository
 public interface JPAClientRepository extends JpaRepository<Client, Long> {
     Optional<Client> findByFullNameAndBirthDate(String fullName, LocalDate birthDate);
-    List<Client> findByFullNameContaining(String namePart);
+    List<Client> findByFullNameContainingIgnoreCase(String namePart);
 }

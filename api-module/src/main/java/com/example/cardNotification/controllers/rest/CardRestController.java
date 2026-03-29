@@ -25,9 +25,11 @@ public class CardRestController {
     }
 
     @GetMapping
-    @Operation(summary = "Получить все карты")
-    public List<CardResponseDto> getAllCards() {
-        return cardService.getAllCards();
+    @Operation(summary = "Получить все карты клиента, либо все существующие")
+    public List<CardResponseDto> getAllCards(
+            @RequestParam(required = false) Long clientId,
+            @RequestParam(required = false) String number) {
+        return cardService.getCards(clientId, number);
     }
 
     @GetMapping("/{id}")
@@ -46,6 +48,12 @@ public class CardRestController {
         if (response.isExecuted())
             return ResponseEntity.status(201).body(response.getCardResponseDto());
         else return ResponseEntity.status(404).body("Клиента с id: " + cardDto.getClientId().toString() + " не существует");
+    }
+
+    @PostMapping("/issue/{clientId}")
+    public CardResponseDto issueCard(@PathVariable Long clientId
+    ) {
+        return cardService.issueCard(clientId);
     }
 
     @PostMapping("/close/{id}")
