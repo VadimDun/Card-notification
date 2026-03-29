@@ -7,13 +7,20 @@ export default function ClientsPage() {
 
     const [clients, setClients] = useState([]);
 
+    const [searchName, setSearchName] = useState("");
+
     useEffect(() => {
         loadClients();
-    }, []);
+    }, [searchName]);
 
     async function loadClients() {
+        let url = "http://localhost:8080/rest/clients";
 
-        await fetch("http://localhost:8080/rest/clients")
+        if (searchName) {
+            url += `?name=${searchName}`;
+        }
+
+        fetch(url)
             .then(response => response.json())
             .then(data => setClients(data));
 
@@ -49,7 +56,15 @@ export default function ClientsPage() {
 
             <h1>Клиенты</h1>
 
-            <ClientForm onCreate={createClient} />
+            <ClientForm onCreate={createClient}/>
+
+            <input
+                placeholder="Поиск клиента по имени"
+                value={searchName}
+                onChange={e =>
+                    setSearchName(e.target.value)
+                }
+            />
 
             <ClientList clients={clients} onDelete={deleteClient}/>
 

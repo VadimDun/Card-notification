@@ -39,8 +39,8 @@ public class SqlClientRepository implements ClientRepository {
     }
 
     @Override
-    public List<Client> findByFullNameContaining(String namePart){
-        return jpaClientRepository.findByFullNameContaining(namePart);
+    public List<Client> findByFullNameContainingIgnoreCase(String namePart){
+        return jpaClientRepository.findByFullNameContainingIgnoreCase(namePart);
     }
 
     @Override

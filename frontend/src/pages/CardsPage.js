@@ -13,12 +13,14 @@ export default function CardsPage() {
     const [sortField, setSortField] = useState("id");
     const [sortDirection, setSortDirection] = useState("asc");
 
+    const [searchNumber, setSearchNumber] = useState("");
+
     const processedCards = sortCards(cards);
 
     useEffect(() => {
         loadCards(selectedClientId);
         loadClients();
-    }, [selectedClientId]);
+    }, [selectedClientId, searchNumber]);
 
     async function loadCards(clientId = "") {
 
@@ -26,6 +28,10 @@ export default function CardsPage() {
 
         if (clientId) {
             url += `?clientId=${clientId}`;
+        }
+
+        if (searchNumber) {
+            url += `?number=${searchNumber}`;
         }
 
         fetch(url)
@@ -138,6 +144,14 @@ export default function CardsPage() {
                 ))}
 
             </select>
+
+            <input
+                placeholder="Поиск по номеру карты"
+                value={searchNumber}
+                onChange={e =>
+                    setSearchNumber(e.target.value)
+                }
+            />
 
             <CardList cards={processedCards} onClose={closeCard} onDelete={deleteCard} onSort={handleSort}/>
 

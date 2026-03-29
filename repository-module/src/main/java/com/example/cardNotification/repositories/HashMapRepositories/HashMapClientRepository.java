@@ -55,8 +55,8 @@ public class HashMapClientRepository implements ClientRepository {
     }
 
     @Override
-    public List<Client> findByFullNameContaining(String namePart){
-        return new ArrayList<>(clients.values().stream().filter(client -> client.getFullName().contains(namePart)).toList());
+    public List<Client> findByFullNameContainingIgnoreCase(String namePart){
+        return new ArrayList<>(clients.values().stream().filter(client -> client.getFullName().toLowerCase().contains(namePart.toLowerCase())).toList());
     }
 
     @Override

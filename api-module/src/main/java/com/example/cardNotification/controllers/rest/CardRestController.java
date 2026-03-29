@@ -26,8 +26,10 @@ public class CardRestController {
 
     @GetMapping
     @Operation(summary = "Получить все карты клиента, либо все существующие")
-    public List<CardResponseDto> getAllCards(@RequestParam(required = false) Long clientId) {
-        return cardService.getCards(clientId);
+    public List<CardResponseDto> getAllCards(
+            @RequestParam(required = false) Long clientId,
+            @RequestParam(required = false) String number) {
+        return cardService.getCards(clientId, number);
     }
 
     @GetMapping("/{id}")

@@ -18,6 +18,7 @@ public interface CardRepository {
     List<Card> findAll();
     List<Card> findByCardNumberContaining(String numberPart);
     List<Card> findByClientId(Long clientId);
+    List<Card> findByClientIdAndCardNumberContaining(Long clientId, String cardNumber);
     boolean existsById(Long id);
     void deleteById(long id);
 }

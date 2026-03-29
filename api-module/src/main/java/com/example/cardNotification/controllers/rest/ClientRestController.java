@@ -25,9 +25,9 @@ public class ClientRestController {
     }
 
     @GetMapping
-    @Operation(summary = "Получить всех клиентов")
-    public List<ClientResponseDto> getAllClients() {
-        return clientService.getAllClients();
+    @Operation(summary = "Получить клиентов по имени, либо всех существующих")
+    public List<ClientResponseDto> getAllClients(@RequestParam(required = false) String name) {
+        return clientService.getClients(name);
     }
 
     @GetMapping("/{id}")
