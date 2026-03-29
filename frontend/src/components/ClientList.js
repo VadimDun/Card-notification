@@ -5,6 +5,8 @@ export default function ClientList({ clients, onDelete }) {
         <ul>
             {clients.map(client => (
                 <li key={client.id}>
+                    ID: {client.id}
+                    {" | "}
                     {client.fullName}({client.birthDate}): {client.email}
                     <button onClick={() => onDelete(client.id)}>
                         Удалить

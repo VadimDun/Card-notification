@@ -13,7 +13,7 @@ export default function ClientsPage() {
 
     async function loadClients() {
 
-        fetch("http://localhost:8080/rest/clients")
+        await fetch("http://localhost:8080/rest/clients")
             .then(response => response.json())
             .then(data => setClients(data));
 
@@ -46,7 +46,7 @@ export default function ClientsPage() {
 
         <div>
 
-            <h1>Clients</h1>
+            <h1>Клиенты</h1>
 
             <ClientForm onCreate={createClient} />
 
