@@ -2,6 +2,8 @@ package com.example.cardNotification.repositories.SQLRepositories;
 
 import com.example.cardNotification.models.Card;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -19,5 +21,7 @@ public interface JPACardRepository extends JpaRepository<Card, Long> {
     List<Card> findByExpDateLessThanEqualAndNotifiedFalse(LocalDate expDate);
     List<Card> findByClientId(Long clientId);
     List<Card> findByClientIdAndCardNumberContaining(Long clientId, String cardNumber);
+    @Query("SELECT c.active FROM Card c WHERE c.id = :id")
+    Optional<Boolean> findActiveById(@Param("id") Long id);
 }
 

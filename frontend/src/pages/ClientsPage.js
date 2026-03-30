@@ -27,17 +27,21 @@ export default function ClientsPage() {
     }
 
     async function createClient(client) {
-        await fetch("http://localhost:8080/rest/clients", {
+        const response = await fetch("http://localhost:8080/rest/clients", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(client)
         })
-            .then(() => {
-                alert("Клиент создан");
-                loadClients();
-            });
+
+        if (response.status === 201) {
+            loadClients();
+        } else if (response.status === 200) {
+            alert("Клиент с такими данными уже существует");
+        } else {
+            alert("Произошла ошибка при создании клиента");
+        }
     }
 
     async function deleteClient(id) {

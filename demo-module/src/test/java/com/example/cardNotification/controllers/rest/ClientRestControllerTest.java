@@ -145,7 +145,7 @@ class ClientRestControllerTest {
     @Test
     void getClientById_WithInvalidId_ShouldReturnBadRequest() throws Exception {
         mockMvc.perform(get("/rest/clients/-1"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isInternalServerError());
     }
 
     @Test

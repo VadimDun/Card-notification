@@ -122,54 +122,53 @@ public class CardService {
         cardRepository.save(card);
     }
 
-    public boolean closeCard(Long cardId) {
+    public void closeCard(Long cardId) {
         Optional<Card> cardOptional = cardRepository.findById(cardId);
-
-        if (cardOptional.isEmpty()) {
-            logger.warn("Карта с id:{} не найдена для удаления", cardId);
-            return false;
+        Card card;
+        if (cardOptional.isPresent()) {
+            card = cardOptional.get();
+            card.setActive(false);
+            cardRepository.save(card);
+            logger.info("Карта с id:{} удалена", cardId);
         }
-
-        Card card = cardOptional.get();
-        if (!card.isActive()){
-            logger.warn("Карта с id:{} уже удалена", cardId);
-            return false;
-        }
-
-        card.setActive(false);
-
-        cardRepository.save(card);
-        logger.info("Карта с id:{} удалена", cardId);
-        return true;
     }
 
-    public CardResponseDto issueCard(Long clientId) {
+    public CardServiceDto issueCard(Long clientId) {
 
-        Client client = clientRepository.findById(clientId)
-                .orElseThrow(() -> new RuntimeException("Клиент не найден"));
+        Optional<Client> client = clientRepository.findById(clientId);
 
-        Card card = new Card();
+        CardServiceDto cardServiceDto = new CardServiceDto();
 
-        String newCardNumber = generateCardNumber();
-        while (cardRepository.findByCardNumber(newCardNumber).isPresent()) {
-            newCardNumber = generateCardNumber();
+        if (client.isPresent()) {
+            Card card = new Card();
+
+            String newCardNumber = generateCardNumber();
+            while (cardRepository.findByCardNumber(newCardNumber).isPresent()) {
+                newCardNumber = generateCardNumber();
+            }
+            card.setCardNumber(newCardNumber);
+
+            LocalDate now = LocalDate.now();
+
+            card.setIssueDate(now);
+
+            card.setExpDate(now.plusYears(4));
+
+            card.setActive(true);
+
+            card.setClient(client.get());
+
+            Card savedCard = cardRepository.save(card);
+
+            cardServiceDto.setExecuted(true);
+            logger.info("Выпущена карта {}", savedCard);
         }
-        card.setCardNumber(newCardNumber);
+        else {
+            cardServiceDto.setExecuted(false);
+            logger.warn("Карта для клиента с id:{} не создана - клиент не найден", clientId);
+        }
 
-        LocalDate now = LocalDate.now();
-
-        card.setIssueDate(now);
-
-        card.setExpDate(now.plusYears(4));
-
-        card.setActive(true);
-
-        card.setClient(client);
-
-        Card savedCard = cardRepository.save(card);
-
-        return CardMapper.MapToResponse(savedCard);
-
+        return cardServiceDto;
     }
 
     public Card reissueCard(Card oldCard) {
@@ -244,11 +243,15 @@ public class CardService {
         return cardNumber.toString();
     }
 
-    public boolean deleteById(long id) {
-        if (cardRepository.existsById(id)) {
-            cardRepository.deleteById(id);
-            return true;
-        }
-        return false;
+    public boolean existById(Long id){
+        return cardRepository.existsById(id);
+    }
+
+    public boolean activeById(Long id){
+        return cardRepository.activeById(id);
+    }
+
+    public void deleteById(long id) {
+        cardRepository.deleteById(id);
     }
 }

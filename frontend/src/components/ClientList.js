@@ -20,6 +20,7 @@ export default function ClientList({ clients, onDelete }) {
             <tr>
                 <th>ID</th>
                 <th>Имя</th>
+                <th>Дата рождения</th>
                 <th>Email</th>
                 <th>Действия</th>
             </tr>
@@ -33,6 +34,7 @@ export default function ClientList({ clients, onDelete }) {
 
                     <td>{client.id}</td>
                     <td>{client.fullName}</td>
+                    <td>{client.birthDate}</td>
                     <td>{client.email}</td>
 
                     <td>

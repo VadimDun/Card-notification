@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,29 +48,44 @@ public class CardRestController {
         CardServiceDto response = cardService.createCard(cardDto);
         if (response.isExecuted())
             return ResponseEntity.status(201).body(response.getCardResponseDto());
-        else return ResponseEntity.status(404).body("Клиента с id: " + cardDto.getClientId().toString() + " не существует");
+        return ResponseEntity.status(404).body("Клиента с id: " + cardDto.getClientId().toString() + " не существует");
     }
 
     @PostMapping("/issue/{clientId}")
-    public CardResponseDto issueCard(@PathVariable Long clientId
-    ) {
-        return cardService.issueCard(clientId);
+    public ResponseEntity<?> issueCard(@PathVariable Long clientId) {
+        CardServiceDto response = cardService.issueCard(clientId);
+        if (response.isExecuted())
+            return ResponseEntity.status(201).body(response.getCardResponseDto());
+        return ResponseEntity.status(404).body("Клиента с id: " + clientId.toString() + " не существует");
     }
 
     @PostMapping("/close/{id}")
     @Operation(summary = "Закрыть карту")
     public ResponseEntity<Void> closeCard(@PathVariable @Positive long id) {
-        if (cardService.closeCard(id))
-            return ResponseEntity.noContent().build();
-        else return ResponseEntity.notFound().build();
+        if (!cardService.existById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (!cardService.activeById(id)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
+        cardService.closeCard(id);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Удалить карту")
     public ResponseEntity<Void> deleteCard(@PathVariable @Positive long id) {
-        if (cardService.deleteById(id)) {
-            return ResponseEntity.noContent().build();
+        if (!cardService.existById(id)) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+
+        if (cardService.activeById(id)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
+        cardService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

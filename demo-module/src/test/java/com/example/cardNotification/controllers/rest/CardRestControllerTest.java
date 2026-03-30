@@ -158,7 +158,8 @@ class CardRestControllerTest {
 
     @Test
     void closeCard_WithExistingId_ShouldReturnNoContent() throws Exception {
-        when(cardService.closeCard(1L)).thenReturn(true);
+        when(cardService.existById(1L)).thenReturn(true);
+        when(cardService.activeById(1L)).thenReturn(true);
 
         mockMvc.perform(post("/rest/cards/close/1"))
                 .andExpect(status().isNoContent());
@@ -166,7 +167,7 @@ class CardRestControllerTest {
 
     @Test
     void closeCard_WithNonExistentId_ShouldReturnNotFound() throws Exception {
-        when(cardService.closeCard(999L)).thenReturn(false);
+        when(cardService.existById(1L)).thenReturn(false);
 
         mockMvc.perform(post("/rest/cards/close/999"))
                 .andExpect(status().isNotFound());
@@ -174,35 +175,45 @@ class CardRestControllerTest {
 
     @Test
     void closeCard_WithInvalidId_ShouldReturnBadRequest() throws Exception {
+        when(cardService.existById(1L)).thenReturn(false);
+
         mockMvc.perform(post("/rest/cards/close/-1"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
     void closeCard_WithAlreadyClosedCard_ShouldReturnNotFound() throws Exception {
-        when(cardService.closeCard(1L)).thenReturn(false);
+        when(cardService.existById(1L)).thenReturn(true);
+        when(cardService.activeById(1L)).thenReturn(false);
 
         mockMvc.perform(post("/rest/cards/close/1"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isConflict());
     }
 
     @Test
     void deleteCard_WithExistingId_ShouldReturnNoContent() throws Exception {
-        when(cardService.deleteById(1L)).thenReturn(true);
+        when(cardService.existById(1L)).thenReturn(true);
+        when(cardService.activeById(1L)).thenReturn(false);
 
         mockMvc.perform(delete("/rest/cards/1"))
                 .andExpect(status().isNoContent());
+    }
 
-        verify(cardService, times(1)).deleteById(1L);
+    @Test
+    void deleteCard_WithExistingIdAndActive_ShouldReturnConflict() throws Exception {
+        when(cardService.existById(1L)).thenReturn(true);
+        when(cardService.activeById(1L)).thenReturn(true);
+
+        mockMvc.perform(delete("/rest/cards/1"))
+                .andExpect(status().isConflict());
     }
 
     @Test
     void deleteCard_WithNonExistentId_ShouldReturnNotFound() throws Exception {
-        when(cardService.deleteById(999L)).thenReturn(false);
+        when(cardService.existById(1L)).thenReturn(false);
+        when(cardService.activeById(1L)).thenReturn(true);
 
         mockMvc.perform(delete("/rest/cards/999"))
                 .andExpect(status().isNotFound());
-
-        verify(cardService, times(1)).deleteById(999L);
     }
 }

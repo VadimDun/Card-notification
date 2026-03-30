@@ -69,6 +69,12 @@ public class SqlCardRepository implements CardRepository {
     }
 
     @Override
+    public boolean activeById(Long id){
+        Optional<Boolean> active = jpacardRepository.findActiveById(id);
+        return active.orElse(false);
+    }
+
+    @Override
     public boolean existsById(Long id){
         return jpacardRepository.existsById(id);
     }

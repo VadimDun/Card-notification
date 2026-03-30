@@ -83,6 +83,11 @@ public class HashMapCardRepository implements CardRepository {
         return new ArrayList<>(cards.values().stream().filter(card -> card.getClient().getId().equals(clientId) && card.getCardNumber().contains(cardNumber)).toList());
     }
 
+    @Override
+    public boolean activeById(Long id){
+        if (!cards.containsKey(id)) return false;
+        return cards.get(id).isActive();
+    }
 
     @Override
     public boolean existsById(Long id){

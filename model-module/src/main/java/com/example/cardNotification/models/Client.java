@@ -33,7 +33,7 @@ public class Client {
         if (o == null || getClass() != o.getClass()) return false;
         Client client = (Client) o;
 
-        return fullName.equals(client.fullName) && birthDate.equals(client.birthDate);
+        return fullName.equalsIgnoreCase(client.fullName) && birthDate.equals(client.birthDate) && email.equals(client.email);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class Client {
         if (id != null) {
             return id.hashCode();
         }
-        return fullName.hashCode() & birthDate.hashCode();
+        return fullName.hashCode() & birthDate.hashCode() & email.hashCode();
     }
 
     @Override

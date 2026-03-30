@@ -41,7 +41,7 @@
 
 - Отправка уведомлений по расписанию (либо таймеру)
 - Поиск всех карт, срок действия которых истекает (например, через неделю)
-- Генерация уведомления с записью в файл (позже с отправкой на почту)
+- Генерация уведомления с выбором записи в файл, либо отправкой на почту
 
 ## Архитектура
 
@@ -161,15 +161,6 @@ cd demo-module/src/main/resources
 ```bash
 spring.mail.username=..
 spring.mail.password=..
-
-spring.datasource.url=..
-
-spring.datasource.username=..
-spring.datasource.password=..
-
-spring.datasource.driver-class-name=org.postgresql.Driver
-
-spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
 ```
 После в корне проекта выполняем команду
 ```bash

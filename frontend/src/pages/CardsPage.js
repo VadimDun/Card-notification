@@ -47,49 +47,73 @@ export default function CardsPage() {
     }
 
     async function createCard(card) {
-        await fetch("http://localhost:8080/rest/cards", {
+        const response = await fetch("http://localhost:8080/rest/cards", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(card)
         })
-            .then(() => {
-                loadCards();
-            });
+        if (response.status === 201){
+            loadCards()
+        }
+        else if (response.status === 404){
+            alert("Клиент с таким id не существует")
+        }
+        else {
+            alert("Произошла ошибка при создании карты");
+        }
     }
 
     async function issueCard(clientId) {
 
-        await fetch(
+        const response = await fetch(
             `http://localhost:8080/rest/cards/issue/${clientId}`,
             {
                 method: "POST"
             }
-        )
-            .then(() => {
-                loadCards();
-            });
+        );
 
+        if (response.status === 201) {
+            await loadCards(clientId);
+            setSelectedClientId(clientId);
+        } else if (response.status === 404) {
+            alert("Клиент не найден");
+        } else {
+            alert("Произошла ошибка при выпуске карты");
+        }
     }
 
     async function closeCard(id) {
-        await fetch(`http://localhost:8080/rest/cards/close/${id}`, {
+        const response = await fetch(`http://localhost:8080/rest/cards/close/${id}`, {
             method: "POST"
-        })
-            .then(() => {
-                loadCards();
-            });
+        });
+
+        if (response.status === 204) {
+            loadCards();
+        } else if (response.status === 404) {
+            alert("Карта не найдена");
+        } else if (response.status === 409) {
+            alert("Карта уже закрыта");
+        } else {
+            alert("Произошла ошибка при закрытии карты");
+        }
     }
 
     async function deleteCard(id) {
-        await fetch(`http://localhost:8080/rest/cards/${id}`, {
+        const response = await fetch(`http://localhost:8080/rest/cards/${id}`, {
             method: "DELETE"
-        })
-            .then(() => {
-                alert("Карта создана");
-                loadCards();
-            });
+        });
+
+        if (response.status === 204) {
+            loadCards();
+        } else if (response.status === 404) {
+            alert("Клиент с таким ID не найден");
+        } else if (response.status === 409) {
+            alert(`Нельзя удалить активную карту`);
+        } else {
+            alert("Произошла ошибка при удалении");
+        }
     }
 
     function sortCards(cards) {
