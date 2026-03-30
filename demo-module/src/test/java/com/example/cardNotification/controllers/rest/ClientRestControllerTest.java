@@ -66,7 +66,7 @@ class ClientRestControllerTest {
     @Test
     void getAllClients_ShouldReturnListOfClientsSingle() throws Exception {
         List<ClientResponseDto> clients = Collections.singletonList(ClientMapper.MapToResponse(testClient));
-        when(clientService.getAllClients()).thenReturn(clients);
+        when(clientService.getClients(null)).thenReturn(clients);
 
         mockMvc.perform(get("/rest/clients"))
                 .andExpect(status().isOk())
@@ -89,7 +89,7 @@ class ClientRestControllerTest {
                 ClientMapper.MapToResponse(testClient),
                 ClientMapper.MapToResponse(client2)
         );
-        when(clientService.getAllClients()).thenReturn(clients);
+        when(clientService.getClients(null)).thenReturn(clients);
 
         mockMvc.perform(get("/rest/clients"))
                 .andExpect(status().isOk())
@@ -105,7 +105,7 @@ class ClientRestControllerTest {
 
     @Test
     void getAllClients_ShouldReturnEmptyListWhenNoClients() throws Exception {
-        when(clientService.getAllClients()).thenReturn(List.of());
+        when(clientService.getClients(null)).thenReturn(List.of());
 
         mockMvc.perform(get("/rest/clients"))
                 .andExpect(status().isOk())

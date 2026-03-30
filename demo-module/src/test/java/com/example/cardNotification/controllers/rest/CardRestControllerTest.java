@@ -76,7 +76,7 @@ class CardRestControllerTest {
     @Test
     void getAllCards_ShouldReturnListOfCards() throws Exception {
         List<CardResponseDto> cards = Collections.singletonList(CardMapper.MapToResponse(testCard));
-        when(cardService.getAllCards()).thenReturn(cards);
+        when(cardService.getCards(null, null)).thenReturn(cards);
 
         mockMvc.perform(get("/rest/cards"))
                 .andExpect(status().isOk())
@@ -91,7 +91,7 @@ class CardRestControllerTest {
 
     @Test
     void getAllCards_ShouldReturnEmptyListWhenNoCards() throws Exception {
-        when(cardService.getAllCards()).thenReturn(List.of());
+        when(cardService.getCards(null, null)).thenReturn(List.of());
 
         mockMvc.perform(get("/rest/cards"))
                 .andExpect(status().isOk())

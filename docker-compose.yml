@@ -17,6 +17,7 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
+
   card-app:
     build: .
     container_name: card-notification-app
@@ -26,6 +27,16 @@ services:
 
     depends_on:
       - postgres
+
+  card-ui:
+    build: ./frontend
+    container_name: card-notification-ui
+
+    ports:
+      - "3000:80"
+
+    depends_on:
+      - card-app
 
 volumes:
   postgres-data:
