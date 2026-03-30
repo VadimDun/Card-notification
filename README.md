@@ -149,6 +149,30 @@
 ## Запуск
 
 ```bash
+git clone https://github.com/VadimDun/Card-notification
+
+cd Card-notification
+
+# Необходимо добавить файл с локальными данными
+cd demo-module/src/main/resources
+```
+создаем файл application-local.properties 
+и добавляем в него следующий код, заменяя точки на свои данные 
+```bash
+spring.mail.username=..
+spring.mail.password=..
+
+spring.datasource.url=..
+
+spring.datasource.username=..
+spring.datasource.password=..
+
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+```
+После в корне проекта выполняем команду
+```bash
 docker-compose up --build
 ```
 
