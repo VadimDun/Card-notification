@@ -26,11 +26,13 @@ export default function CardsPage() {
 
         let url = "http://localhost:8080/rest/cards";
 
-        if (clientId) {
+        if (clientId && searchNumber) {
+            url += `?clientId=${clientId}&number=${searchNumber}`;
+        }
+        else if (clientId) {
             url += `?clientId=${clientId}`;
         }
-
-        if (searchNumber) {
+        else if (searchNumber) {
             url += `?number=${searchNumber}`;
         }
 
@@ -90,7 +92,7 @@ export default function CardsPage() {
         });
 
         if (response.status === 204) {
-            loadCards();
+            loadCards(selectedClientId);
         } else if (response.status === 404) {
             alert("Карта не найдена");
         } else if (response.status === 409) {
@@ -106,7 +108,7 @@ export default function CardsPage() {
         });
 
         if (response.status === 204) {
-            loadCards();
+            loadCards(selectedClientId);
         } else if (response.status === 404) {
             alert("Клиент с таким ID не найден");
         } else if (response.status === 409) {
@@ -187,6 +189,7 @@ export default function CardsPage() {
                 onClick={() =>
                     issueCard(selectedClientId)
                 }
+                className="btn-issue"
             >
                 Выпустить карту выбранному клиенту
             </button>

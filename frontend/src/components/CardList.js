@@ -89,14 +89,16 @@ export default function CardList({ cards, onClose, onDelete, onSort }) {
                     <td>
 
                         {card.active && (
-                            <button onClick={() => handleClose(card.id)}>
+                            <button onClick={() => handleClose(card.id)}  className="btn-close">
                                 Закрыть
                             </button>
                         )}
 
-                        <button onClick={() => handleDelete(card.id)}>
-                            Удалить
-                        </button>
+                        {!card.active && (
+                            <button onClick={() => handleDelete(card.id)} className="btn-delete">
+                                Удалить
+                            </button>
+                        )}
 
                     </td>
 

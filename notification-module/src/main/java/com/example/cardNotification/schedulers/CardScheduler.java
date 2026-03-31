@@ -24,8 +24,8 @@ public class CardScheduler {
         this.cardNotifier = cardNotifier;
     }
 
-    @Scheduled(fixedRate = 30000) // for testing
-//    @Scheduled(cron = "${cron.time}")
+//    @Scheduled(fixedRate = 300000) // for testing
+    @Scheduled(cron = "${cron.time}")
     // todo проверка на отправку через 1/2 недели(?)
     public void checkExpiringCardsForNotification() {
         logger.info("Уведомление клиентов начато");

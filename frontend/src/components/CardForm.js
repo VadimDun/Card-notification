@@ -71,7 +71,7 @@ export default function CardForm({ onCreate, clients }) {
                 ))}
             </select>
 
-            <button type="submit">
+            <button type="submit" className="btn-submit">
                 Добавить карту
             </button>
 

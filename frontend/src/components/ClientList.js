@@ -39,7 +39,7 @@ export default function ClientList({ clients, onDelete }) {
 
                     <td>
 
-                        <button onClick={() => handleDelete(client.id)}>
+                        <button onClick={() => handleDelete(client.id)} className="btn-delete">
                             Удалить
                         </button>
 

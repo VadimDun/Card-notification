@@ -49,7 +49,7 @@ export default function ClientForm({ onCreate }) {
                 required
             />
 
-            <button type="submit">
+            <button type="submit" className="btn-submit">
                 Добавить клиента
             </button>
 

@@ -19,8 +19,11 @@ select {
 
 button {
     padding: 6px 10px;
-    margin-left: 5px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 table {
@@ -37,33 +40,56 @@ td {
 
 th {
     background-color: #f0f0f0;
+    cursor: pointer;
+    user-select: none;
+}
+
+th:hover {
+    background-color: #e0e0e0;
 }
 
 tr:nth-child(even) {
     background-color: #fafafa;
 }
 
-button {
-    padding: 6px 10px;
-    margin-right: 5px;
-    border: none;
-    background-color: #1976d2;
+/* Классы для кнопок */
+.btn-submit {
+    background-color: #4caf50;
     color: white;
-    border-radius: 4px;
 }
 
-button:hover {
-    background-color: #115293;
+.btn-submit:hover {
+    background-color: #45a049;
 }
 
-button:last-child {
-    background-color: #d32f2f;
+.btn-close {
+    background-color: #2196f3;
+    color: white;
 }
 
-button:last-child:hover {
-    background-color: #9a0007;
+.btn-close:hover {
+    background-color: #0b7dda;
 }
 
+.btn-delete {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn-delete:hover {
+    background-color: #da190b;
+}
+
+.btn-issue {
+    background-color: #ff9800;
+    color: white;
+}
+
+.btn-issue:hover {
+    background-color: #fb8c00;
+}
+
+/* Стили для статусов */
 .status-open {
     color: green;
     font-weight: bold;
@@ -72,4 +98,18 @@ button:last-child:hover {
 .status-closed {
     color: red;
     font-weight: bold;
+}
+
+/* Дополнительные стили */
+button:disabled {
+    background-color: #cccccc !important;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+input:focus,
+select:focus,
+button:focus {
+    outline: none;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
 }

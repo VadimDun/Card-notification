@@ -51,6 +51,18 @@
 - **Backend:** Java Spring
 - **Frontend:** React
 
+## Абстракция
+С помощью application.properties (demo-module/src/resources) вы можете выбирать
+
+- тип репозитория storage.type= 
+  - sql (Postgres)
+  - hashMap 
+- Время отправки уведомлений cron.time = 0 0 0 * * *
+- Тип присылаемых уведомлений cardNotifier.type=
+  - file (запись в файл notification.txt)
+  - mail (отправка на почту)
+  - fileMail (запись в файл с одновременной отправкой на почту)
+
 ## Стек
 
 ### Backend

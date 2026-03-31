@@ -52,6 +52,7 @@ public class CardRestController {
     }
 
     @PostMapping("/issue/{clientId}")
+    @Operation(summary = "Выпустить новую карту для клиента")
     public ResponseEntity<?> issueCard(@PathVariable Long clientId) {
         CardServiceDto response = cardService.issueCard(clientId);
         if (response.isExecuted())
